@@ -3,7 +3,7 @@ LDFLAGS = -pthread -lsfml-network -lsfml-graphics -lsfml-window -lsfml-system -l
 SOURCES=$(shell find . -name "*.cpp")
 OBJECTS=$(SOURCES:%.cpp=%.o)
 TARGET=experiments.o
-FIDOLIB=../../Fido/Software/fido-lib.a
+FIDOLIB=../../Fido/build/fido.a
 
 .PHONY: all
 all: $(TARGET)

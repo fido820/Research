@@ -3,11 +3,11 @@
 #include <chrono>
 #include <thread>
 
-#include "../../Fido/Software/WireFitQLearn.h"
-#include "../../Fido/Software/NeuralNet.h"
-#include "../../Fido/Software/Backpropagation.h"
-#include "../../Fido/Software/FidoSim/Simlink.h"
-#include "../../Fido/Software/LSInterpolator.h"
+#include "../../Fido/include/WireFitQLearn.h"
+#include "../../Fido/include/NeuralNet.h"
+#include "../../Fido/include/Backpropagation.h"
+#include "../../Fido/include/Simulator/Simlink.h"
+#include "../../Fido/include/LSInterpolator.h"
 
 void lineFollowDrive() {
 	Simlink simulator;
@@ -42,7 +42,7 @@ void lineFollowHolo() {
 	double averageIterations = 0;
 
 	Simlink simulator;
-	rl::WireFitQLearn learner = rl::WireFitQLearn(1, 2, 4, 10, 4, {-1, -1}, {1, 1}, 11, new rl::LSInterpolator(), net::Backpropagation(), 0.95, 0.4);
+	rl::WireFitQLearn learner = rl::WireFitQLearn(1, 2, 1, 12, 4, {-1, -1}, {1, 1}, 11, new rl::LSInterpolator(), net::Backpropagation(), 0.95, 0.4);
 	for(int a = 0; a < 200; a++) {
 		std::cout << a << "; average " << averageIterations << "\n";
 

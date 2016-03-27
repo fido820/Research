@@ -1,10 +1,10 @@
 set -e
 
-cd ../../Fido/Software
+cd ../../Fido/
 make
 make lib
 
-cd ../../Research/Experiments
+cd ../Research/Experiments
 make clean
 make
 ./experiments.o
