@@ -68,22 +68,117 @@ void lineFollowHoloContinuous() {
 		while(goodIter < 10 && iter < 1000) {
 			rl::Action action;
 			for(int a = 0; a < 2; a++) {
-				action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1 }, exploration);
+				action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1}, exploration);
 				simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0]*maxDistanceComponent, action[1]*maxDistanceComponent));
 			}
 
 			double lineValue = simulator.distanceFromLine();
-			action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1 }, exploration);
+			action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1}, exploration);
 			simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0]*maxDistanceComponent, action[1]*maxDistanceComponent));
 
 			double newLineValue = simulator.distanceFromLine();
-			rl::State newState = { !simulator.isLeftOfLine() ? -1 : 1 };
+			rl::State newState = { !simulator.isLeftOfLine() ? -1 : 1};
 			learner.applyReinforcementToLastAction((fabs(lineValue) - fabs(newLineValue)) / sqrt(2*pow(maxDistanceComponent, 2)), newState);
 
 			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 			if(simulator.distanceFromLine() < 80) goodIter++;
 			else goodIter = 0;
+
+			iter++;
+		}
+
+		iterations.push_back(iter);
+		
+		printStats(iterations);
+	}
+}
+
+void lineFollowHoloContinuousRand() {
+	double maxDistanceComponent = 10;
+	double exploration = 0.2;
+	std::vector<int> iterations;
+
+	Simlink simulator;
+	rl::WireFitQLearn learner = rl::WireFitQLearn(2, 2, 1, 6, 4, {-1, -1}, {1, 1}, 3, new rl::LSInterpolator(), net::Backpropagation(0.01, 0.9, 0.05, 5000), 1, 0.5);
+	for(int a = 0; a < 200; a++) {
+		learner.reset();
+		simulator.robot.setPosition(400, 400);
+		
+		int goodIter = 0;
+		int iter = 0;
+
+		while(goodIter < 10 && iter < 1000) {
+			rl::Action action;
+			for(int a = 0; a < 2; a++) {
+				action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1, (double)rand() / (double)RAND_MAX}, exploration);
+				simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0]*maxDistanceComponent, action[1]*maxDistanceComponent));
+			}
+
+			double lineValue = simulator.distanceFromLine();
+			action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1, (double)rand() / (double)RAND_MAX}, exploration);
+			simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0]*maxDistanceComponent, action[1]*maxDistanceComponent));
+
+			double newLineValue = simulator.distanceFromLine();
+			rl::State newState = { !simulator.isLeftOfLine() ? -1 : 1, (double)rand() / (double)RAND_MAX};
+			learner.applyReinforcementToLastAction((fabs(lineValue) - fabs(newLineValue)) / sqrt(2*pow(maxDistanceComponent, 2)), newState);
+
+			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+			if(simulator.distanceFromLine() < 80) goodIter++;
+			else goodIter = 0;
+
+			iter++;
+		}
+
+		iterations.push_back(iter);
+		
+		printStats(iterations);
+	}
+}
+
+void lineFollowHoloContinuousKiwi() {
+	double maxMove = 50;
+    double exploration = 0.2;
+    std::vector<int> iterations;
+
+    Simlink simulator;
+
+    rl::WireFitQLearn learner = rl::WireFitQLearn(1, 3, 1, 6, 4, {-1, -1, -1}, {1, 1, 1}, 6, new rl::LSInterpolator(), net::Backpropagation(0.01, 0.9, 0.1, 5000), 1, 0);
+    learner.reset();
+    
+    std::cout << "Done with initialization\n";
+    for(int a = 0; a < 200; a++) {
+		learner.reset();
+		simulator.robot.setPosition(400, 400);
+		
+		int goodIter = 0;
+		int iter = 0;
+
+		while(goodIter < 20) {
+			rl::Action action;
+			/*for(int a = 0; a < 2; a++) {
+				action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1, simulator.robot.getRotation() / 360.0}, exploration);
+				simulator.robot.inverseGoKiwi(action[0]*maxMove, action[1]*maxMove, action[2]*maxMove, 1);
+			}*/
+
+			action = learner.chooseBoltzmanAction({!simulator.isLeftOfLine() ? -1 : 1}, exploration);
+        	double lineValue = simulator.distanceFromLine();
+        	simulator.robot.inverseGoKiwi(action[0]*maxMove, action[1]*maxMove, action[2]*maxMove, 1);
+        	double newLineValue = simulator.distanceFromLine();
+
+        	//if((fabs(lineValue) - fabs(newLineValue)) / 142.0 > 1) std::cout << (fabs(lineValue) - fabs(newLineValue)) << "\n";
+        	
+	        learner.applyReinforcementToLastAction((fabs(lineValue) - fabs(newLineValue)) / 142.0, { !simulator.isLeftOfLine() ? -1 : 1});
+
+			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+			if(simulator.distanceFromLine() < 100) goodIter++;
+			else goodIter = 0;
+
+			if(iter % 10 == 0) {
+				simulator.robot.setPosition(400, 400);
+			}
 
 			iter++;
 		}
