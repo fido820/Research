@@ -2,7 +2,7 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[nottoc]{tocbibind}
-\usepackage[margin=1.25in]{geometry}
+\usepackage[margin=1.2in]{geometry}
 \usepackage[activate={true,nocompatibility},final,
 			tracking=true,kerning=true,spacing=true,
 			factor=1100,stretch=10,shrink=10]{microtype}
@@ -16,7 +16,8 @@
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-\addtolength{\topmargin}{-.8in}
+\addtolength{\topmargin}{-.7in}
+\pagenumbering{gobble}
 
 
 \title{Fido: A Universal Robot Control System using Reinforcement Learning with Limited Feedback}
@@ -59,21 +60,21 @@
 			Limping Line Following & 6                   & 20.05                    & 37.12                 \\ \bottomrule
 		\end{tabular}
 		\caption{Number of Learning Iterations, Action Selection Time, and Training Time Per Iteration for Thing Two Tasks (20 Trials)}
-		\label{tab:data}
+		\label{tab:data1}
 	\end{table}
 
 	In addition to the tasks implemented on Thing Two, a further test was run on Fido's simulator.  This test evaluated Fido's ability to disregard irrelevant and noisy sensor data  unrelated to the task at hand.   For a line following test, in addition to a line sensor, Fido was given a random value as an input. This had almost no effect on Fido's performance. However, it impacted Fido's latency.
 
 	\begin{table}[ht]
 		\centering
-		\begin{tabular}{@{}lccc@{}}
+		\begin{tabular}{@{}lcccc@{}}
 			\toprule
-			Task        & Average Learning Iterations & Median Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
-			Line Following       & 18.0                   & 10.                  & 0               & 2               \\
-			Noisy Line Following       & 21.4                   & 10.                  & 0               & 106               \\
+			Task        & Avg. Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
+			Line Following       & 18.0                                    & 0.00               & 1.98               \\
+			Noisy Line Following       & 21.4                                   & 0.00               & 105.48               \\
 		\end{tabular}
 		\caption{Number of Learning Iterations, Action Selection Time, and Training Time Per Iteration for Additional Simulator Tasks (400 Trials)}
-		\label{tab:data}
+		\label{tab:data2}
 	\end{table}
 
 \end{document}
