@@ -34,7 +34,7 @@
 
 	\section*{New Hardware Implementation}
 
-	Between the preliminary and final rounds of NYCSEF, we implemented a new robot to run the Fido control system, nicknamed ``Thing Two.''  Thing Two has three 90-degree Swedish wheels at 120$^{\circ}$ angles, allowing it to control all the robot's degrees of freedom (otherwise known as a holonomic drive system).
+	Since the preliminary rounds, we implemented a new robot to run the Fido control system, nicknamed ``Thing Two.''  Thing Two has three 90-degree Swedish wheels at 120$^{\circ}$ angles, allowing it to control all the robot's degrees of freedom (otherwise known as a holonomic drive system).
 
 	\begin{figure}[ht]
 		\centering
@@ -44,30 +44,33 @@
 
 	\section*{Additional Results}
 
-	For this round of NYCSEF, we were also able to perform additional testing, mainly due to the development of our new hardware implementation, ``Thing Two''.  The drive straight task challenged Fido to master the advanced kinematics of its holonomic drive system; the robot was trained to move in a straight line.  In the line following task, Thing Two was trained to use its drive system and an array of infrared photo-sensors to learn to follow a line.  Thing Two was also trained to use its ZX gesture sensor to learn to follow a ball, or play fetch.   In the limp task, first a trained line following model was loaded.  Next, the wires to one of Thing Two's wheels were removed, and Fido was retrained to follow a line using only his two remaining wheels.  This task demonstrated the applications of Fido over standard procedurally-programmed robot control systems; rather than having to be fully reprogrammed, Fido can be retrained to adapt to unexpected circumstances in the field.  This task also demonstrates Fido's retrainability and universality, as it was both able to be retrained and adapt to a new drive system.
+	For this round of NYCSEF, we were also able to perform additional testing, mainly due to the development of our new hardware implementation, ``Thing Two''.  The drive straight task challenged Fido to master the advanced kinematics of its holonomic drive system; the robot was trained to move in a straight line.  In the line following task, Thing Two was trained to use its drive system and an array of infrared photo-sensors to learn to follow a line.  Thing Two was also trained to use its ZX gesture sensor to learn to follow a ball.   
+
+	In the limp task, first a trained line following model was loaded.  Next, the wires to one of Thing Two's wheels were removed, and Fido was retrained to follow a line using only his two remaining wheels.  This task demonstrated the applications of Fido over standard procedurally-programmed robot control systems; rather than having to be fully reprogrammed, Fido can be retrained to adapt to unexpected circumstances in the field.  This task also demonstrates Fido's retrainability and universality, as it was both able to be retrained and adapt to a new drive system.
 
 	\begin{table}[ht]
 		\centering
 		\begin{tabular}{@{}lccc@{}}
 			\toprule
 			Task                   & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
-			Drive Straight         & 6                   & 0.                    & 6                  \\
-			Line Following         & 14                  & 21                    & 110                \\
-			Fetch                  & 17                  & 1                     & 11                 \\
-			Limping Line Following & 6                   & 20                    & 37                 \\ \bottomrule
+			Drive Straight         & 12.5                   & 1.75                    & 30.00                  \\
+			Line Following         & 15                  & 21.07                    & 95.42                \\
+			Fetch                  & 8                  & 1.25                     & 70.50                 \\
+			Limping Line Following & 6                   & 20.05                    & 37.12                 \\ \bottomrule
 		\end{tabular}
 		\caption{Number of Learning Iterations, Action Selection Time, and Training Time Per Iteration for Thing Two Tasks (20 Trials)}
 		\label{tab:data}
 	\end{table}
 
-	In addition to the additional tasks implemented on Thing Two, a further test was run on Fido's simulator.  This test evaluated Fido's ability to disregard irrelevant and noisy sensor data  unrelated to the task at hand.   For a line following test, in addition to a line sensor Fido was given a light sensor as an input, which was set to random values.
+	In addition to the tasks implemented on Thing Two, a further test was run on Fido's simulator.  This test evaluated Fido's ability to disregard irrelevant and noisy sensor data  unrelated to the task at hand.   For a line following test, in addition to a line sensor Fido was given a random value as an input. This had almost no effect on Fido's performance.
 
 	\begin{table}[ht]
 		\centering
 		\begin{tabular}{@{}lccc@{}}
 			\toprule
-			Task        & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
-			Noisy Line Following       & 10                   & 1.                  & 12               \\
+			Task        & Average Learning Iterations & Median Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
+			Line Following       & 18.0                   & 10.                  & 12               & 12               \\
+			Noisy Line Following       & 21.4                   & 10.                  & 21.4               & 12               \\
 		\end{tabular}
 		\caption{Number of Learning Iterations, Action Selection Time, and Training Time Per Iteration for Additional Simulator Tasks (400 Trials)}
 		\label{tab:data}
