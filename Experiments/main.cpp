@@ -12,8 +12,19 @@
 #include "../../Fido/include/LSInterpolator.h"
 #include "../../Fido/include/FidoControlSystem.h"
 
-void printStats(std::vector<int> iterations) {
+void printStats(std::vector<double> iterations) {
 	double sum = 0;
+	for(auto a = iterations.begin(); a != iterations.end(); a++) sum += *a;
+	std::cout << "Average iter: " << (sum / double(iterations.size())) << "\n";
+
+	std::sort(iterations.begin(), iterations.end(), [=](double a, double b) {
+		return a < b;
+	});
+	std::cout << "Median iter: " << iterations[iterations.size() / 2] << "\n";
+}
+
+void printStats(std::vector<int> iterations) {
+	int sum = 0;
 	for(auto a = iterations.begin(); a != iterations.end(); a++) sum += *a;
 	std::cout << "Average iter: " << (sum / double(iterations.size())) << "\n";
 
@@ -52,6 +63,7 @@ void lineFollowDrive() {
 }
 
 void lineFollowHoloContinuous() {
+	std::vector<double> choosingTimes, updateTimes;
 	double maxDistanceComponent = 10;
 	double exploration = 0.2;
 	std::vector<int> iterations;
@@ -73,12 +85,17 @@ void lineFollowHoloContinuous() {
 			}
 
 			double lineValue = simulator.distanceFromLine();
+			clock_t begin = clock();
 			action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1}, exploration);
+			choosingTimes.push_back(double(clock() - begin) / CLOCKS_PER_SEC);
 			simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0]*maxDistanceComponent, action[1]*maxDistanceComponent));
 
 			double newLineValue = simulator.distanceFromLine();
 			rl::State newState = { !simulator.isLeftOfLine() ? -1 : 1};
+
+			begin = clock();
 			learner.applyReinforcementToLastAction((fabs(lineValue) - fabs(newLineValue)) / sqrt(2*pow(maxDistanceComponent, 2)), newState);
+			updateTimes.push_back(double(clock() - begin) / CLOCKS_PER_SEC);
 
 			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -92,9 +109,13 @@ void lineFollowHoloContinuous() {
 		
 		printStats(iterations);
 	}
+
+	printStats(choosingTimes);
+	printStats(updateTimes);
 }
 
 void lineFollowHoloContinuousRand() {
+	std::vector<double> choosingTimes, updateTimes;
 	double maxDistanceComponent = 10;
 	double exploration = 0.2;
 	std::vector<int> iterations;
@@ -116,12 +137,16 @@ void lineFollowHoloContinuousRand() {
 			}
 
 			double lineValue = simulator.distanceFromLine();
+			clock_t begin = clock();
 			action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1, (double)rand() / (double)RAND_MAX}, exploration);
+			choosingTimes.push_back(double(clock() - begin) / CLOCKS_PER_SEC);
 			simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0]*maxDistanceComponent, action[1]*maxDistanceComponent));
 
 			double newLineValue = simulator.distanceFromLine();
 			rl::State newState = { !simulator.isLeftOfLine() ? -1 : 1, (double)rand() / (double)RAND_MAX};
+			begin = clock();
 			learner.applyReinforcementToLastAction((fabs(lineValue) - fabs(newLineValue)) / sqrt(2*pow(maxDistanceComponent, 2)), newState);
+			updateTimes.push_back(double(clock() - begin) / CLOCKS_PER_SEC);
 
 			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -135,6 +160,9 @@ void lineFollowHoloContinuousRand() {
 		
 		printStats(iterations);
 	}
+
+	printStats(choosingTimes);
+	printStats(updateTimes);
 }
 
 void lineFollowHoloContinuousKiwi() {
@@ -284,5 +312,5 @@ void goStraight() {
 }
 
 int main() {
-	lineFollowHoloContinuous();
+	lineFollowHoloContinuousRand();
 }
