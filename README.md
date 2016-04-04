@@ -2,7 +2,11 @@
 
 Researched and built by [Michael Truell](https://github.com/truell20 "Michael Truell") and [Josh Gruenstein](https://github.com/joshuagruenstein "Josh Gruenstein").
 
-Fido is a universal robotic control system using reinforcement learning with limited feedback for NYCSEF 2016 and the Science Research class at Horace Mann School. Fido was researched and built in C++ by Josh Gruenstein and Michael Truell.
+Fido is a universal robotic control system using reinforcement learning with limited feedback. Fido was researched and built in C++ by Josh Gruenstein and Michael Truell.
+
+## Awards
+
+Fido advanced to the finals of the New York City Science and Engineering Fair. There it was selected to move on to the Intel International Science and Engineering Fair and won the Intel Excellence in Computer Science award and the First Level in Computer Science award.
 
 ## Project Summary
 
