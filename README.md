@@ -14,7 +14,7 @@ The purpose of this project was to develop a universal robot control system that
 
 Fido was tested on a computer simulated robot with a motor control system, a large sensor array, and some additional outputs.  The system performed well doing a variety of tasks, such as learning to drive to a radio beacon and following a line.  Two hardware implementations were also created for additional testing.  These implementations used low cost and low power embedded GNU/Linux systems to run the Fido software, and were successfully trained to perform complex tasks such as line following, learning a kiwi holonomic drive system, following a ball, and adapting to mechanical failures.
 
-Further details can be found in the (https://github.com/FidoProject/Research/raw/master/Paper/Paper.pdf)[research paper] and (https://github.com/FidoProject/Research/raw/master/Paper/Poster.pdf)[poster].
+Further details can be found in the [research paper](https://github.com/FidoProject/Research/raw/master/Paper/Paper.pdf) and [poster](https://github.com/FidoProject/Research/raw/master/Paper/Poster.pdf).
 
 ## Awards
 
