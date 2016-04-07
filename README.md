@@ -19,3 +19,5 @@ Further details can be found in the (https://github.com/FidoProject/Research/raw
 ## Awards
 
 Fido advanced to the finals of the New York City Science and Engineering Fair.  There it won the Intel Excellence in Computer Science award, placed first in the Computer Science category, and was selected to represent NYC at the Intel International Science and Engineering Fair.
+
+Fido will compete at ISEF at the beginning of May 2016.
