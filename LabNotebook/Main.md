@@ -109,3 +109,9 @@ to tasks that don't require memory as well.
 how would you do weighting of older actions?
 This might not be an issue.
 The NN could figure out which actions to prioritize.
+
+## Trainers
+
+Fido could be made further universal
+if trainers that did not require learning rate were used
+instead of Backpropagation.
