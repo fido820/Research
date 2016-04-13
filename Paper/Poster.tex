@@ -1,20 +1,20 @@
 \documentclass[final]{beamer}
 \usepackage[scale=1.24]{beamerposter}
-\usepackage{graphicx,booktabs} 
+\usepackage{graphicx,booktabs}
 \usepackage{helvet}
 
 \usetheme{confposter}
 \setbeamercolor{block title}{fg=Maroon,bg=white}
 \setbeamercolor{block body}{fg=black,bg=white}
 \setbeamercolor{block alerted title}{fg=white,bg=Maroon!70}
-\setbeamercolor{block alerted body}{fg=black,bg=Maroon!10} 
+\setbeamercolor{block alerted body}{fg=black,bg=Maroon!10}
 
 \newlength{\sepwid}
 \newlength{\onecolwid}
 \newlength{\twocolwid}
 \newlength{\threecolwid}
 \setlength{\paperwidth}{48in}
-\setlength{\paperheight}{36in}
+\setlength{\paperheight}{48in}
 \setlength{\sepwid}{0.024\paperwidth}
 \setlength{\onecolwid}{0.22\paperwidth}
 \setlength{\twocolwid}{0.464\paperwidth}
@@ -22,8 +22,8 @@
 \setlength{\topmargin}{-0.5in}
 
 \title{Fido: A Universal Robot Control System Using\\Reinforcement Learning with Limited Feedback}
-\author{Joshua Gruenstein \and Michael Truell}
-\institute{Horace Mann School}
+\author{\LARGE Joshua Gruenstein \and Michael Truell}
+\institute{\mbox{}}
 
 \begin{document}
 
@@ -66,7 +66,7 @@
 
 \end{column}
 
-\begin{column}{\sepwid}\end{column} 
+\begin{column}{\sepwid}\end{column}
 
 \begin{column}{\twocolwid}
 
@@ -117,7 +117,7 @@
 		\end{itemize}
 
 		\item Usually discrete: no relation made between states or actions
-		
+
 		\begin{itemize}
 			\item Can be optimized by coupling a wire-fitted interpolator with our neural network (\textbf{Wire-Fitted Q-Learning})
 		\end{itemize}
@@ -128,9 +128,9 @@
 		\end{itemize}
 	\end{itemize}
 	\vspace{-1.25cm}
-\end{block}\end{column} 
+\end{block}\end{column}
 
-\end{columns} 
+\end{columns}
 
 	\begin{block}{Results}
 		Results were gathered both from simulation and hardware for a variety of tasks.  In simulation, Fido tasked with setting an LED proportional to measured sound intensity (``Flash''), driving to a point with a direct XY-control drive system (``Float'') and a differential drive system (``Drive''), and line following (``Line'').
@@ -175,11 +175,6 @@
 		\small{\bibliographystyle{IEEEtran}\bibliography{Poster}\vspace{0.75in}}
 	\end{block}
 
-	\setbeamercolor{block title}{fg=dblue,bg=white}
-	\begin{block}{Acknowledgements}
-		\small{\rmfamily{Thank you to Dr. Jeff Weitz of Horace Mann School, who gave us guidance in the art of scientific research.}}
-	\end{block}
-
 \end{column}
 
 \end{columns}
@@ -187,7 +182,7 @@
 \end{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Adapted from "Jacobs Landscape Poster" 
-% (https://teamwork.jacobs-university.de:8443/confluence/display/CoPandBiG/LaTeX+Poster)
+% Adapted from "Jacobs Landscape Poster"
+% https://teamwork.jacobs-university.de:8443/confluence/display/CoPandBiG/LaTeX+Poster
 % License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

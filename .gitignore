@@ -1,15 +1,16 @@
+# C++
 *.o
 
+
+# LaTeX
 *.fls
-
 *.aux
-
 *.fdb_latexmk
-
 *.log
-
 *.gz
-
 *.blg
-
 *.bbl
+*.nav
+*.out
+*.snm
+*.toc
