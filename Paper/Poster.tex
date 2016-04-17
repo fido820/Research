@@ -45,9 +45,9 @@
 		\begin{itemize}
 			\item \textbf{Trainability}: Allow both human and autonomous training and retraining rather than programming
 			\item \textbf{Universality}: Run on any robot and perform any task, even without prior knowledge of the host
-			\item \textbf{Speed}: Require few learning iterations and low latency for quick and efficient training
+			\item \textbf{Performance}: Require few learning iterations and low latency for quick and efficient training
 		\end{itemize}
-		To achieve this we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a neural network, a probabilistic action selection model, and history sampling.  The control system could be trained at a rate \textbf{3 times greater} than the industry standard, allowing practicality over traditional pre-programmed control systems.
+		To achieve this we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a neural network, a probabilistic action selection model, and history sampling.  The control system could be trained at a rate \textbf{3 times} the industry standard, allowing practicality over traditional pre-programmed control systems.
 	\end{alertblock}
 
 	\begin{block}{System Overview}
@@ -119,7 +119,7 @@
 	\begin{itemize}
 		\item \textbf{Neural Networks:} Function approximators modeled after nature with the capability to take in a large number of inputs, parallelly process them, and produce a set of outputs
 	\end{itemize}
-	
+
 	\begin{figure}
 		\centering
 		\includegraphics[width=.8\linewidth]{Figures/FeedForwardRendered}
@@ -152,7 +152,7 @@
 
 
 	\begin{block}{Results}
-		Results were gathered both from simulation and hardware for a variety of tasks.  Gathered data for each task included the number of learning iterations, or how many pieces of reward it took for Fido to master the task, action selection time, or the latency in probabalistic action selection, and training time, or the latency in updating Fido's model.
+		Results were gathered both from simulation and hardware for a variety of tasks.  Gathered data for each task included the number of learning iterations, or how many pieces of reward it took for Fido to master the task, action selection time, or latency in probabalistic action selection, and training time, or latency in updating Fido's model.
 		\begin{table}[ht]
 			\centering
 			\caption {Fido Results in Simulation} \label{tab:simresults}
@@ -213,7 +213,7 @@
 	\end{block}
 
 	\begin{block}{Applications}
-		We would like to experiment with dynamic optimization of hyperparameters, changing factors such as neural network architecture and Boltzman temperature constant to best fit the task at hand.  We also plan to package Fido as a machine learning library for embedded electronics and robotics, and build a microcontroller-based hardware implementation to further explore for resource-limited environments.
+		Support small businesses, rebuild the military.
 	\end{block}
 
 	\begin{block}{Selected References}
