@@ -1,6 +1,6 @@
 \documentclass[final]{beamer}
 \usepackage[scale=1.24]{beamerposter}
-\usepackage{graphicx,booktabs}
+\usepackage{graphicx,booktabs,tabularx}
 \usepackage{helvet}
 
 \usetheme{confposter}
@@ -20,6 +20,8 @@
 \setlength{\twocolwid}{0.464\paperwidth}
 \setlength{\threecolwid}{0.708\paperwidth}
 \setlength{\topmargin}{-0.5in}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
 
 \title{Fido: A Universal Robot Control System Using\\Reinforcement Learning with Limited Feedback}
 \author{\LARGE Joshua Gruenstein \and Michael Truell}
@@ -133,29 +135,48 @@
 \end{columns}
 
 	\begin{block}{Results}
-		Results were gathered both from simulation and hardware for a variety of tasks.  In simulation, Fido tasked with setting an LED proportional to measured sound intensity (``Flash''), driving to a point with a direct XY-control drive system (``Float'') and a differential drive system (``Drive''), and line following (``Line'').
-
+		Results were gathered both from simulation and hardware for a variety of tasks.  Gathered data for each task included the number of learning iterations, or how many pieces of reward it took for Fido to master the task, action selection time, or the latency in probabalistic action selection, and training time, or the latency in updating Fido's model.
+		\vspace{1cm}
 		\begin{table}[ht]
 			\centering
-			\begin{tabular}{@{}lccc@{}}
+			\caption {Fido Results in Simulation} \label{tab:simresults}
+			\begin{tabularx}{.9\textwidth}{l||Y|Y|Y}
 				\toprule
 				Task        & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
 				Flash       & 6                   & 0.                  & 6               \\
-				Float       & 14                  & 1                  & 6               \\
-				Drive       & 17                  & 1                  & 11              \\
-				Line        & 21                  & 2                  & 10.               \\ \bottomrule
-			\end{tabular}
+				Float to Point       & 14                  & 1                  & 6               \\
+				Drive to Point       & 17                  & 1                  & 11              \\
+				Line Following       & 18                                    & 0.               & 2               \\
+				Noisy Line Following       & 21                                   & 0.               & 105               \\
+				\bottomrule
+			\end{tabularx}
 		\end{table}
 		\vspace{.5cm}
-		In hardware, Fido was tasked with staying still or moving based on measured sound intensity and driving to a speaker using the robot's differential drive.
+
 		\begin{table}[ht]
 			\centering
-			\begin{tabular}{@{}lccc@{}}
+			\caption {Fido Results on Thing One} \label{tab:thingoneresults}
+			\begin{tabularx}{.9\textwidth}{l||Y|Y|Y}
 				\toprule
-				Task             & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
-				Stay Still       & 3                   & 1                    & 43.5                  \\
-				Drive to Point   & 18                  & 4                     & 65                  \\
-			\end{tabular}
+				Task              & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
+				Stay Still        & 3                   & 1                    & 43.5                  \\
+				Drive to Point    & 18                  & 4                     & 65                  \\
+				\bottomrule
+			\end{tabularx}
+		\end{table}
+
+		\begin{table}[ht]
+			\centering
+			\caption {Fido Results on Thing Two} \label{tab:thingtworesults}
+			\begin{tabularx}{.9\textwidth}{l||Y|Y|Y}
+				\toprule
+				Task              & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
+				Drive Straight         & 13                   & 2                    & 30                 \\
+				Line Following         & 15                  & 21                    & 95                \\
+				Fetch                  & 8                  & 1                     & 70                 \\
+				Limping Line Following & 6                   & 20                    & 37                 \\
+				\bottomrule
+			\end{tabularx}
 		\end{table}
 
 	\end{block}
