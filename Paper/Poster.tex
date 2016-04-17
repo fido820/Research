@@ -43,28 +43,28 @@
 	\begin{alertblock}{Control System Objectives}
 		Fido was created to fulfill the following goals:
 		\begin{itemize}
-			\item \textbf{Trainability}: Allow both human and autonomous training rather than reprogramming
-			\item \textbf{Universality}: Run on any robot, even without prior knowledge of the host
+			\item \textbf{Trainability}: Allow both human and autonomous training and retraining rather than programming
+			\item \textbf{Universality}: Run on any robot and perform any task, even without prior knowledge of the host
+			\item \textbf{Speed}: Require few learning iterations and low latency for quick and efficient training
 		\end{itemize}
-		These goals were achieved through the training of artificial neural networks with a wire-fitted moving least squares interpolator following the Q-learning reinforcement algorithm and an action selection policy that utilizes a Boltzmann distribution of probability.
+		To achieve this we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a neural network, a probabilistic action selection model, and history sampling.  The control system could be trained at a rate \textbf{3 times greater} than the industry standard, allowing practicality over traditional pre-programmed control systems.
 	\end{alertblock}
 
-	\begin{block}{Implementation}
-		Fido was programmed in C++, with no external dependencies.  However, the simulator does use the SFML graphics library.  The hardware implementation uses the Intel Edison embedded platform, a 3D printed chassis and a differential drive system.
-
+	\begin{block}{System Overview}
 		\begin{figure}
 			\centering
-			\fbox{\includegraphics[width=.75\linewidth]{Figures/Screenshot.png}}
-			\caption{Fido Simulator Graphical User Interface}
+			\includegraphics[width=\linewidth]{Figures/diagramRendered.png}
+			\caption{Control System Diagram}
 		\end{figure}
-
-		\begin{figure}
-			\centering
-			\includegraphics[width=.77\linewidth]{Figures/Prototype.jpg}
-			\caption{Fido Hardware Implementation}
-		\end{figure}
+		\vspace{-1cm}
+		\begin{itemize}
+			\item From a macro perspective, Fido can be viewed as a ``black box:'' inputs go in and outputs go out, Fido must optimize the relationship of inputs to outputs to maximize reward
+			\item  \textbf{Reward system:} Trying to determine the expected reward for an action in a given state based on past reward received
+			\begin{itemize}
+				\item Must have a scalable, performance-optimized way of storing past state-reward sets and detecting patterns
+			\end{itemize}
+		\end{itemize}
 	\end{block}
-
 
 \end{column}
 
@@ -72,47 +72,63 @@
 
 \begin{column}{\twocolwid}
 
-	\begin{block}{Learning Algorithm}
-		\begin{columns}[t,totalwidth=\twocolwid]
-			\begin{column}{\onecolwid}
-				\begin{itemize}
-					\item From a macro perspective, Fido can be viewed as a ``black box:'' inputs go in and outputs go out, Fido must optimize the relationship of inputs to outputs to maximize reward
-					\item  \textbf{Reward system:} Trying to determine the expected reward for an action in a given state based on past reward received
-					\begin{itemize}
-						\item Must have a scalable, performance-optimized way of storing past state-reward sets and detecting patterns
-					\end{itemize}
-				\end{itemize}
-			\end{column}
-			\begin{column}{\onecolwid}
-				\vspace{1cm}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\linewidth]{Figures/diagramRendered.png}
-					\caption{Control System Diagram}
-				\end{figure}
-			\end{column}
-		\end{columns}
-	\end{block}
+\vspace{-1.65cm}
 
 \begin{columns}[t,totalwidth=\twocolwid]
 
-\begin{column}{\onecolwid}\begin{block}{Artificial Neural Networks}
+	\begin{column}{\onecolwid}
+		\begin{block}{Reinforcement Learning}
+			\begin{itemize}
+				\item \textbf{Q-Learning:} Develops a function that intakes a state-action pair and outputs expected utility
+				\item Ordinarily, the Q-function is modeled by storing state-action pairs in a table
+				\begin{itemize}
+					\item Is impractical for large state spaces, use a function approximator instead: \textbf{Artificial Neural Networks}
+				\end{itemize}
+
+				\item Usually discrete: no relation made between states or actions
+
+				\begin{itemize}
+					\item Can be optimized by coupling a wire-fitted interpolator with our neural network (\textbf{Wire-Fitted Q-Learning})
+				\end{itemize}
+
+				\item Cannot just pick the action with the greatest expected utility: must ``explore'' to be trainable and re-trainable
+				\begin{itemize}
+					\item Use a \textbf{Boltzmann Probability Distribution} selection policy
+				\end{itemize}
+			\end{itemize}
+			\vspace{-1.25cm}
+		\end{block}
+		\begin{block}{Action Selection}
+			\begin{itemize}
+				\item Function approximators modeled after nature with the capability to take in a large number of inputs, parallelly process them, and produce a set of outputs
+			\end{itemize}
+			\vspace{-1.2cm}
+			\begin{figure}
+				\centering
+				\includegraphics[width=.8\linewidth]{Figures/FeedForwardRendered}
+				\caption{Single Output Feed-forward Neural Network}
+				\label{fig:feedforward}
+			\end{figure}
+			\vspace{-3cm}
+		\end{block}
+	\end{column}
+
+	\begin{column}{\onecolwid}\begin{block}{Training}
+
+
 	\begin{itemize}
-		\item Function approximators modeled after nature with the capability to take in a large number of inputs, parallelly process them, and produce a set of outputs
+		\item \textbf{Neural Networks:} Function approximators modeled after nature with the capability to take in a large number of inputs, parallelly process them, and produce a set of outputs
 	\end{itemize}
-	\vspace{-1.2cm}
+	
 	\begin{figure}
 		\centering
 		\includegraphics[width=.8\linewidth]{Figures/FeedForwardRendered}
 		\caption{Single Output Feed-forward Neural Network}
 		\label{fig:feedforward}
 	\end{figure}
-	\vspace{-3cm}
-\end{block}\end{column}
 
-\begin{column}{\onecolwid}\begin{block}{Reinforcement Learning}
 	\begin{itemize}
-		\item \textbf{Q-Learning:} Develops a function that intakes a state-action pair and outputs expected utility
+		\item \textbf{History Sampling:} Develops a function that intakes a state-action pair and outputs expected utility
 		\item Ordinarily, the Q-function is modeled by storing state-action pairs in a table
 		\begin{itemize}
 			\item Is impractical for large state spaces, use a function approximator instead: \textbf{Artificial Neural Networks}
@@ -129,10 +145,11 @@
 			\item Use a \textbf{Boltzmann Probability Distribution} selection policy
 		\end{itemize}
 	\end{itemize}
-	\vspace{-1.25cm}
+
 \end{block}\end{column}
 
 \end{columns}
+
 
 	\begin{block}{Results}
 		Results were gathered both from simulation and hardware for a variety of tasks.  Gathered data for each task included the number of learning iterations, or how many pieces of reward it took for Fido to master the task, action selection time, or the latency in probabalistic action selection, and training time, or the latency in updating Fido's model.
@@ -185,6 +202,15 @@
 \begin{column}{\sepwid}\end{column}
 
 \begin{column}{\onecolwid}
+	\begin{block}{Implementation}
+		Fido was programmed in C++, with no external dependencies.  However, the simulator does use the SFML graphics library.  The hardware implementation uses the Intel Edison embedded platform, a 3D printed chassis and a differential drive system.
+
+		\begin{figure}
+			\centering
+			\fbox{\includegraphics[width=.75\linewidth]{Figures/Screenshot.png}}
+			\caption{Fido Simulator Graphical User Interface}
+		\end{figure}
+	\end{block}
 
 	\begin{block}{Applications}
 		We would like to experiment with dynamic optimization of hyperparameters, changing factors such as neural network architecture and Boltzman temperature constant to best fit the task at hand.  We also plan to package Fido as a machine learning library for embedded electronics and robotics, and build a microcontroller-based hardware implementation to further explore for resource-limited environments.
