@@ -33,28 +33,8 @@
 
 	\begin{figure}[ht]
 		\centering
-		\begin{tikzpicture}
-			\node[circle,fill,inner sep=-2pt] at (0,0){};
-			\draw[->,rotate=20] (1.3,0) arc (0:-340:1.3cm);
-			\draw[<->, dashed] (-1.5,0.64) -- (-0.2,-0.1);
-
-			\node at (0.55,-0.2) {${(x,y)}$};
-			\node at (0,1.5) {$\omega$};
-			\node at (-0.9,0) {$l$};
-
-			\foreach \r [count=\i] in {60,180,300} {
-				\begin{scope}[rotate=\r]
-					\draw[pattern=north west lines,thick](0,2) ellipse (1cm and 0.3cm);
-					\draw[dotted] (0,0) -- (0,1.7);
-					\draw[->] (1.2,2) -- (2,2);
-					\node at (1.6,1.7) {$v_{\i}$};
-				\end{scope}
-			};
-		\end{tikzpicture}
+		\input{KiwiKinematics.tex}
 		\caption{Kiwi Drive Kinematics}
 	\end{figure}
-
-
-\end{document}
 
 \end{document}
