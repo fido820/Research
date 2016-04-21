@@ -20,23 +20,23 @@
 \date{\today}
 
 \begin{document}
-\maketitle
+	\maketitle
 
-\section{Figures}
-\centering
-
-\begin{table}[]
+	\section{Figures}
 	\centering
-	\begin{tabular}{@{}lccc@{}}
-		\toprule
-		Task        & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
-		Flash       & 6                   & 0.26                  & 5.97               \\
-		Float       & 14                  & 0.94                  & 5.60               \\
-		Drive       & 17                  & 0.76                  & 11.09              \\
-		Line Follow & 20                  & yolo                  & yolo               \\ \bottomrule
-	\end{tabular}
-	\caption{ADD TABLE CAPTION HERE}
-\end{table}
+
+	\begin{figure}[ht]
+		\centering
+		\input{Kinematics.tex}
+		\caption{Differential Drive Kinematics}
+	\end{figure}
+
+	\begin{figure}[ht]
+		\centering
+		\input{KiwiKinematics.tex}
+		\caption{Kiwi Drive Kinematics}
+	\end{figure}
+
 
 \end{document}
 
