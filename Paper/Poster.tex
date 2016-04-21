@@ -1,7 +1,10 @@
 \documentclass[final]{beamer}
 \usepackage[scale=1.24]{beamerposter}
 \usepackage{graphicx,booktabs,tabularx}
-\usepackage{helvet}
+\usepackage{helvet,tikz}
+
+\usetikzlibrary{arrows,fit,patterns}
+
 
 \usetheme{confposter}
 \setbeamercolor{block title}{fg=Maroon,bg=white}
@@ -194,12 +197,27 @@
 
 \begin{column}{\onecolwid}
 	\begin{block}{Implementation}
-		Fido was programmed in C++, with no external dependencies.  However, the simulator does use the SFML graphics library.  The hardware implementation uses the Intel Edison embedded platform, a 3D printed chassis and a differential drive system.
+		\setlength\parindent{48pt}
+		\indent The Fido control system was programmed in C++, with no external dependencies. Two hardware implementations and a simulator were constructed to test Fido's performance.  The first robot utilized a differential drive system and was powered by an Intel Edison embedded GNU/Linux computing platorm, while the second used a 3x 90-degree swedish wheel holonomic arrangment and ran on a \$5 Raspberry Pi Zero.
 
 		\begin{figure}
 			\centering
-			\fbox{\includegraphics[width=.75\linewidth]{Figures/Screenshot.png}}
+			\includegraphics[width=.75\linewidth]{Figures/Screenshot.png}
 			\caption{Fido Simulator Graphical User Interface}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=.75\linewidth]{Figures/differentialKinematicsRendered.png}
+			\caption{Differential Drive Kinematics}
+		\end{figure}
+
+		\vspace{-0.5in}
+
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=.5\linewidth]{Figures/kiwiKinematicsRendered.png}
+			\caption{Kiwi Holonomic Drive Kinematics}
 		\end{figure}
 	\end{block}
 
