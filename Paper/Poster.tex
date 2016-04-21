@@ -57,13 +57,15 @@
 			\caption{Control System Diagram}
 		\end{figure}
 		\vspace{-1cm}
-		\begin{itemize}
-			\item From a macro perspective, Fido can be viewed as a ``black box:'' inputs go in and outputs go out
-			\item Fido must optimize the relationship of inputs to outputs to maximize reward
-			\begin{itemize}
-				\item  \textbf{Reward system:} Trying to determine the expected reward for an action in a given state based on past reward received
-			\begin{itemize}
-		\end{itemize}
+		From a macro perspective, Fido can be viewed as a ``black box'' system, where a set of inputs (such as sensors) go in and a set of outputs (actions) go out.  Fido's goal is to maximize given reward by altering its behavior.  The system operates through the following steps:
+
+		\begin{enumerate}
+			\item Sensor values are fed to a neural network.
+			\item The neural network outputs data points, each is an action and its expected reward.
+			\item A wire-fitted least squares interpolator creates a continuous function of action to expected reward using these data points.
+			\item An action is chosen using an Softmax selection policy that dynamically adjusts Fido's exploration level as its confidence level changes.
+			\item After receiving reward, the neural network is trained to output a new set of data points using Adadelta for gradient descent. Dynamic sizing of the neural network and history sampling are employed to improve neural network performance.
+		\end{enumerate}
 	\end{block}
 
 \end{column}
@@ -80,45 +82,34 @@
 		\begin{block}{Reinforcement Learning}
 			\begin{itemize}
 				\item \textbf{Q-Learning:} Develops a function that intakes a state-action pair and outputs expected utility
-				\item Ordinarily, the Q-function is modeled by storing state-action pairs in a table
+				\item Ordinarily, the Q-function is modeled by storing state-action pairs in a table, but this is impractical for large state spaces
 				\begin{itemize}
-					\item Is impractical for large state spaces, use a function approximator instead: \textbf{Artificial Neural Networks}
+					\item Use a function approximator instead to model the Q-function: \textbf{Artificial Neural Networks}
 				\end{itemize}
-
-				\item Usually discrete: no relation made between states or actions
-
+				\item With regular Q-Learning, no relation is made between similar states or actions
 				\begin{itemize}
 					\item Can be optimized by coupling a wire-fitted interpolator with our neural network (\textbf{Wire-Fitted Q-Learning})
 				\end{itemize}
 
-				\item Cannot just pick the action with the greatest expected utility: must ``explore'' to be trainable and re-trainable
-				\begin{itemize}
-					\item Use a \textbf{Boltzmann Probability Distribution} selection policy
-				\end{itemize}
+				\item Complete solution: neural network is given sensor values and outputs data points on a graph of possible action vs expected utility, which are interpolated and used to generate a continuous function of action to expected reward.
 			\end{itemize}
 			\vspace{-1.25cm}
 		\end{block}
 		\begin{block}{Action Selection}
 			\begin{itemize}
-				\item Function approximators modeled after nature with the capability to take in a large number of inputs, parallelly process them, and produce a set of outputs
+				\item Cannot just perform the action with the greatest expected utility: must ``explore'' to be trainable and re-trainable
+				\begin{itemize}
+					\item Use a Softmax Probability Distribution to select an action
+				\end{itemize}
+				\item Cannot just hardcode the exploration level, Fido should stop exploring if confident in its actions and explore more if it is being retrained
+				\begin{itemize}
+					\item Measure confidence using changes in the neural network weight matrix and adjust exploration accordingly
+				\end{itemize}
 			\end{itemize}
-			\vspace{-1.2cm}
-			\begin{figure}
-				\centering
-				\includegraphics[width=.8\linewidth]{Figures/FeedForwardRendered}
-				\caption{Single Output Feed-forward Neural Network}
-				\label{fig:feedforward}
-			\end{figure}
-			\vspace{-3cm}
 		\end{block}
 	\end{column}
 
 	\begin{column}{\onecolwid}\begin{block}{Training}
-
-
-	\begin{itemize}
-		\item \textbf{Neural Networks:} Function approximators modeled after nature with the capability to take in a large number of inputs, parallelly process them, and produce a set of outputs
-	\end{itemize}
 
 	\begin{figure}
 		\centering
@@ -128,21 +119,22 @@
 	\end{figure}
 
 	\begin{itemize}
-		\item \textbf{History Sampling:} Develops a function that intakes a state-action pair and outputs expected utility
-		\item Ordinarily, the Q-function is modeled by storing state-action pairs in a table
+		\item Fido needs to update its model after receiving reward
 		\begin{itemize}
-			\item Is impractical for large state spaces, use a function approximator instead: \textbf{Artificial Neural Networks}
+			\item Use Stochastic Gradient Descent to generate a new action to expected reward function for the past state
+			\item Train the neural network to output the data points that define this function
 		\end{itemize}
-
-		\item Usually discrete: no relation made between states or actions
-
+		\item Many neural network training algorithms require a learning rate that depends on the specifics of the task
 		\begin{itemize}
-			\item Can be optimized by coupling a wire-fitted interpolator with our neural network (\textbf{Wire-Fitted Q-Learning})
+			\item Use the new Adadelta training method which dynamically adjusts learning rate, decreases latency, and results in better neural network accuracy
 		\end{itemize}
-
-		\item Cannot just pick the action with the greatest expected utility: must ``explore'' to be trainable and re-trainable
+		\item \textbf{Control sequences: } Randomly train the neural network on some of Fido's past actions every reward iteration. Give greater weight to newer actions.
 		\begin{itemize}
-			\item Use a \textbf{Boltzmann Probability Distribution} selection policy
+			\item Allows training of action sequences for complex tasks
+		\end{itemize}
+		\item Fido's optimal neural network architecture varies between tasks. Ex. larger networks are more suited for complicated tasks.
+		\begin{itemize}
+			\item Efficiently grow and prune Fido's neural network using neuron sensitivity approximations gathered from fluctuations in the network's weights.
 		\end{itemize}
 	\end{itemize}
 
