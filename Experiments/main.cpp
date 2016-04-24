@@ -331,9 +331,9 @@ void changingAction() {
 
 			double reward;
 			if(iter < 150) {
-				reward = 1-2*fabs(action[0]);
+				reward = 1-fabs(action[0]);
 			} else {
-				reward = 1-2*fabs(action[0]);
+				reward = 1-fabs(action[0]);
 			}
 			learner.applyReinforcementToLastAction(reward, {1});
 			rewards.push_back(reward);
