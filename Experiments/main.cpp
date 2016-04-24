@@ -315,45 +315,38 @@ void goStraight() {
 }
 
 void changingAction() {
-	double maxDistanceComponent = 40;
-	double exploration = 0.3;
 	std::vector<int> iterations;
+	std::vector<double> rewards;
 
-	Simlink simulator;
-	rl::FidoControlSystem learner = rl::FidoControlSystem(2, {-1, -1}, {1, 1}, 3);
+	rl::FidoControlSystem learner = rl::FidoControlSystem(1, {-1}, {1}, 3);
 	learner.trainer = new net::Adadelta(0.95, 0.01, 10000);
-	for(int a = 0; a < 500; a++) {
+	for(int a = 0; a < 100; a++) {
 		learner.reset();
-		simulator.emitter.set(sf::Vector2i(600, 600));
-		simulator.robot.setPosition(400, 400);
 
 		int iter = 0;
-		while(simulator.getDistanceOfRobotFromEmitter() > 50 && iter < 1000) {
-			double x, y;
-			simulator.getRobotDisplacementFromEmitter(&x, &y);
-			rl::Action action = learner.chooseBoltzmanAction({x / (abs(x) + abs(y)), y / (abs(x) + abs(y))}, exploration);
+		while(iter < 300) {
+			rl::Action action = learner.chooseBoltzmanActionDynamic({1});
 
-			double previousDistance = simulator.getDistanceOfRobotFromEmitter();
+			if(iter == 150) std::cout << "---------CHANGE-----------\n";
 
-			simulator.robot.setPosition(simulator.robot.getPosition()+sf::Vector2f(maxDistanceComponent*action[0], maxDistanceComponent*action[1]));
-
-			simulator.getRobotDisplacementFromEmitter(&x, &y);
-
-			std::vector< std::vector< std::vector<double> > > weights = learner.network->getWeights3D();
-			learner.applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / sqrt(2*pow(maxDistanceComponent, 2)), {x / (abs(x) + abs(y)), y / (abs(x) + abs(y))});
-			std::vector< std::vector< std::vector<double> > > newWeights = learner.network->getWeights3D();
-
-			//std::cout << "Uncert: " << ((net::Adadelta *)learner.trainer)->averageChangeInWeight << "\n";
-			if(simulator.getDistanceOfRobotFromEmitter() > sqrt(2*pow(220, 2))) {
-				simulator.robot.setPosition(400, 400);
+			double reward;
+			if(iter < 150) {
+				reward = 1-2*fabs(action[0]);
+			} else {
+				reward = 1-2*fabs(action[0]);
 			}
+			learner.applyReinforcementToLastAction(reward, {1});
+			rewards.push_back(reward);
 
 			iter++;
 		}
 
 		iterations.push_back(iter);
-
 		printStats(iterations);
+
+		std::cout << "-----------Reward-----------\n";
+		printStats(rewards);
+		std::cout << "----------------------\n";
 	}
 }
 
