@@ -4,13 +4,9 @@
 #include <algorithm>
 #include <vector>
 
-#include "../../Fido/include/WireFitQLearn.h"
-#include "../../Fido/include/QLearn.h"
-#include "../../Fido/include/NeuralNet.h"
-#include "../../Fido/include/Backpropagation.h"
 #include "../../Fido/include/Simulator/Simlink.h"
-#include "../../Fido/include/LSInterpolator.h"
-#include "../../Fido/include/FidoControlSystem.h"
+#include "../../Fido/include/Fido.h"
+#include "../../Fido/include/Adadelta.h"
 
 void printStats(std::vector<double> iterations) {
 	double sum = 0;
@@ -36,7 +32,7 @@ void printStats(std::vector<int> iterations) {
 
 void lineFollowDrive() {
 	Simlink simulator;
-	rl::WireFitQLearn learner = rl::WireFitQLearn(2, 2, 3, 10, 5, {-1, -1}, {1, 1}, 6, new rl::LSInterpolator(), net::Backpropagation(), 1, 0.4);
+	rl::WireFitQLearn learner = rl::WireFitQLearn(2, 2, 3, 10, 5, {-1, -1}, {1, 1}, 6, new rl::LSInterpolator(), new net::Backpropagation(), 1, 0.4);
 	for(int a = 0; a < 10000; a++) {
 		double exploration = 0.8;
 		learner.reset();
@@ -50,7 +46,7 @@ void lineFollowDrive() {
 			double lineValue = simulator.distanceFromLine();
 			action = learner.chooseBoltzmanAction({ (double)simulator.isLeftOfLine(), simulator.robot.getRotation() / 360.0 }, exploration);
 			simulator.setMotors(action[0]*100, action[1]*100, 2, 20);
-			
+
 			double newLineValue = simulator.distanceFromLine();
 			rl::State newState = { (double)simulator.isLeftOfLine(), simulator.robot.getRotation() / 360.0 };
 			learner.applyReinforcementToLastAction((fabs(lineValue) - fabs(newLineValue)) / 20.0, newState);
@@ -64,25 +60,22 @@ void lineFollowDrive() {
 
 void lineFollowHoloContinuous() {
 	std::vector<double> choosingTimes, updateTimes;
-	double maxDistanceComponent = 10;
-	double exploration = 0.2;
+	double maxDistanceComponent = 20;
+	double exploration = 0.1;
 	std::vector<int> iterations;
 
 	Simlink simulator;
-	rl::WireFitQLearn learner = rl::WireFitQLearn(1, 2, 1, 6, 4, {-1, -1}, {1, 1}, 3, new rl::LSInterpolator(), net::Backpropagation(0.01, 0.9, 0.05, 5000), 1, 0.5);
-	for(int a = 0; a < 200; a++) {
+	rl::FidoControlSystem learner = rl::FidoControlSystem(1, {-1, -1}, {1, 1}, 3);
+	learner.trainer = new net::Adadelta(0.95, 0.015, 10000);
+	for(int a = 0; a < 2000; a++) {
 		learner.reset();
 		simulator.robot.setPosition(400, 400);
-		
+
 		int goodIter = 0;
 		int iter = 0;
 
 		while(goodIter < 10 && iter < 1000) {
 			rl::Action action;
-			for(int a = 0; a < 2; a++) {
-				action = learner.chooseBoltzmanAction({ !simulator.isLeftOfLine() ? -1 : 1}, exploration);
-				simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0]*maxDistanceComponent, action[1]*maxDistanceComponent));
-			}
 
 			double lineValue = simulator.distanceFromLine();
 			clock_t begin = clock();
@@ -99,14 +92,17 @@ void lineFollowHoloContinuous() {
 
 			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-			if(simulator.distanceFromLine() < 80) goodIter++;
-			else goodIter = 0;
+			if(simulator.distanceFromLine() < 50) goodIter++;
+			else {
+				simulator.robot.setPosition(400, 400);
+				goodIter = 0;
+			}
 
 			iter++;
 		}
 
 		iterations.push_back(iter);
-		
+
 		printStats(iterations);
 	}
 
@@ -114,18 +110,22 @@ void lineFollowHoloContinuous() {
 	printStats(updateTimes);
 }
 
+// Give noisy input
 void lineFollowHoloContinuousRand() {
 	std::vector<double> choosingTimes, updateTimes;
-	double maxDistanceComponent = 10;
+	double maxDistanceComponent = 20;
 	double exploration = 0.2;
 	std::vector<int> iterations;
 
 	Simlink simulator;
-	rl::WireFitQLearn learner = rl::WireFitQLearn(2, 2, 1, 6, 4, {-1, -1}, {1, 1}, 3, new rl::LSInterpolator(), net::Backpropagation(0.01, 0.9, 0.05, 5000), 1, 0.5);
-	for(int a = 0; a < 200; a++) {
+	rl::FidoControlSystem learner = rl::FidoControlSystem(2, {-1, -1}, {1, 1}, 3);
+	//learner.trainer = new net::Backpropagation(0.01, 0.2, 0.05, 50000);
+	//learner.trainer = new net::Backpropagation(0.01, 0.9, 0.01, 5000);
+	learner.trainer = new net::Adadelta(0.95, 0.01, 10000);
+	for(int a = 0; a < 1000; a++) {
 		learner.reset();
 		simulator.robot.setPosition(400, 400);
-		
+
 		int goodIter = 0;
 		int iter = 0;
 
@@ -151,13 +151,16 @@ void lineFollowHoloContinuousRand() {
 			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 			if(simulator.distanceFromLine() < 80) goodIter++;
-			else goodIter = 0;
+			else {
+				goodIter = 0;
+				simulator.robot.setPosition(400, 400);
+			}
 
 			iter++;
 		}
 
 		iterations.push_back(iter);
-		
+
 		printStats(iterations);
 	}
 
@@ -166,20 +169,20 @@ void lineFollowHoloContinuousRand() {
 }
 
 void lineFollowHoloContinuousKiwi() {
-	double maxMove = 50;
+	double maxMove = 20;
     double exploration = 0.2;
     std::vector<int> iterations;
 
     Simlink simulator;
 
-    rl::WireFitQLearn learner = rl::WireFitQLearn(1, 3, 1, 6, 4, {-1, -1, -1}, {1, 1, 1}, 6, new rl::LSInterpolator(), net::Backpropagation(0.01, 0.9, 0.1, 5000), 1, 0);
+    rl::WireFitQLearn learner = rl::WireFitQLearn(1, 3, 1, 6, 4, {-1, -1, -1}, {1, 1, 1}, 6, new rl::LSInterpolator(), new net::Backpropagation(0.01, 0.9, 0.1, 5000), 1, 0);
     learner.reset();
-    
+
     std::cout << "Done with initialization\n";
     for(int a = 0; a < 200; a++) {
 		learner.reset();
 		simulator.robot.setPosition(400, 400);
-		
+
 		int goodIter = 0;
 		int iter = 0;
 
@@ -196,12 +199,12 @@ void lineFollowHoloContinuousKiwi() {
         	double newLineValue = simulator.distanceFromLine();
 
         	//if((fabs(lineValue) - fabs(newLineValue)) / 142.0 > 1) std::cout << (fabs(lineValue) - fabs(newLineValue)) << "\n";
-        	
+
 	        learner.applyReinforcementToLastAction((fabs(lineValue) - fabs(newLineValue)) / 142.0, { !simulator.isLeftOfLine() ? -1 : 1});
 
 			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-			if(simulator.distanceFromLine() < 100) goodIter++;
+			if(simulator.distanceFromLine() < 80) goodIter++;
 			else goodIter = 0;
 
 			if(iter % 10 == 0) {
@@ -212,7 +215,7 @@ void lineFollowHoloContinuousKiwi() {
 		}
 
 		iterations.push_back(iter);
-		
+
 		printStats(iterations);
 	}
 }
@@ -223,10 +226,10 @@ void driveToPointDiscrete() {
 	std::vector<int> iterations;
 
 	Simlink simulator;
-	
+
 	net::NeuralNet *net = new net::NeuralNet(3, 2, 1, 1, "sigmoid");
 	net->setOutputActivationFunction("simpleLinear");
-	
+
 	std::vector<std::vector<double>> possibleActions(0);
 	int baseOfDimensions = 15;
 	for(int a = 0; a < baseOfDimensions; a++) {
@@ -240,7 +243,7 @@ void driveToPointDiscrete() {
 		learner.reset();
 		simulator.placeRobotInRandomPosition();
 		simulator.placeEmitterInRandomPosition();
-		
+
 		int goodIter = 0;
 		int iter = 0;
 
@@ -261,7 +264,7 @@ void driveToPointDiscrete() {
 		}
 
 		iterations.push_back(iter);
-		
+
 		printStats(iterations);
 	}
 }
@@ -272,13 +275,13 @@ void goStraight() {
 	std::vector<int> iterations;
 
 	Simlink simulator;
-	rl::WireFitQLearn learner = rl::WireFitQLearn(1, 1, 1, 3, 4, {-1}, {1}, 11, new rl::LSInterpolator(), net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4);
+	rl::WireFitQLearn learner = rl::WireFitQLearn(1, 1, 1, 3, 4, {-1}, {1}, 11, new rl::LSInterpolator(), new net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4);
 	for(int a = 0; a < 200; a++) {
 		learner.reset();
 		simulator.placeRobotInRandomPosition();
 
 		int iter = 0;
-		
+
 		std::vector<double> rotations(0);
 		double average = 0;
 
@@ -306,11 +309,55 @@ void goStraight() {
 		}
 
 		iterations.push_back(iter);
-		
+
+		printStats(iterations);
+	}
+}
+
+void changingAction() {
+	double maxDistanceComponent = 40;
+	double exploration = 0.3;
+	std::vector<int> iterations;
+
+	Simlink simulator;
+	rl::FidoControlSystem learner = rl::FidoControlSystem(2, {-1, -1}, {1, 1}, 3);
+	learner.trainer = new net::Adadelta(0.95, 0.01, 10000);
+	for(int a = 0; a < 500; a++) {
+		learner.reset();
+		simulator.emitter.set(sf::Vector2i(600, 600));
+		simulator.robot.setPosition(400, 400);
+
+		int iter = 0;
+		while(simulator.getDistanceOfRobotFromEmitter() > 50 && iter < 1000) {
+			double x, y;
+			simulator.getRobotDisplacementFromEmitter(&x, &y);
+			rl::Action action = learner.chooseBoltzmanAction({x / (abs(x) + abs(y)), y / (abs(x) + abs(y))}, exploration);
+
+			double previousDistance = simulator.getDistanceOfRobotFromEmitter();
+
+			simulator.robot.setPosition(simulator.robot.getPosition()+sf::Vector2f(maxDistanceComponent*action[0], maxDistanceComponent*action[1]));
+
+			simulator.getRobotDisplacementFromEmitter(&x, &y);
+
+			std::vector< std::vector< std::vector<double> > > weights = learner.network->getWeights3D();
+			learner.applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / sqrt(2*pow(maxDistanceComponent, 2)), {x / (abs(x) + abs(y)), y / (abs(x) + abs(y))});
+			std::vector< std::vector< std::vector<double> > > newWeights = learner.network->getWeights3D();
+
+			//std::cout << "Uncert: " << ((net::Adadelta *)learner.trainer)->averageChangeInWeight << "\n";
+			if(simulator.getDistanceOfRobotFromEmitter() > sqrt(2*pow(220, 2))) {
+				simulator.robot.setPosition(400, 400);
+			}
+
+			iter++;
+		}
+
+		iterations.push_back(iter);
+
 		printStats(iterations);
 	}
 }
 
 int main() {
-	lineFollowHoloContinuousRand();
+	srand(time(NULL));
+	changingAction();
 }

@@ -4,7 +4,7 @@ cd ../../Fido/
 make
 make lib
 
-cd ../Research/Experiments
+cd ../FidoResearch/Experiments
 make clean
 make
 ./experiments.o
