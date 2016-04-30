@@ -236,7 +236,7 @@ void driveToPointDiscrete() {
 		}
 	}
 
-	rl::QLearn learner = rl::QLearn(net, net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4, possibleActions);
+	rl::QLearn learner = rl::QLearn(net, new net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4, possibleActions);
 	for(int a = 0; a < 400; a++) {
 		learner.reset();
 		simulator.placeRobotInRandomPosition();
@@ -271,7 +271,8 @@ void goStraight() {
 	std::vector<int> iterations;
 
 	Simlink simulator;
-	rl::WireFitQLearn learner = rl::WireFitQLearn(1, 1, 1, 3, 4, {-1}, {1}, 11, new rl::LSInterpolator(), new net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4);
+	rl::FidoControlSystem learner = rl::FidoControlSystem(1, {-1}, {1}, 11);
+	//rl::WireFitQLearn learner = rl::WireFitQLearn(1, 1, 1, 3, 4, {-1}, {1}, 11, new rl::LSInterpolator(), new net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4);
 	for(int a = 0; a < 200; a++) {
 		learner.reset();
 		simulator.placeRobotInRandomPosition();
@@ -281,10 +282,11 @@ void goStraight() {
 		std::vector<double> rotations(0);
 		double average = 0;
 
-		while(rotations.size() < 5 || average > 0.2) {
+		while((rotations.size() < 5 || average > 0.2) && iter < 40) {
 			rl::Action action;
 
-			action = learner.chooseBoltzmanAction({ 1 }, exploration);
+			action = learner.chooseBoltzmanActionDynamic({ 1 });
+			//action = learner.chooseBoltzmanAction({ 1 }, exploration);
 			simulator.robot.rotate(action[0]*maxRotate);
 			//simulator.robot.go(10, 10, 5, 5);
 
@@ -310,12 +312,20 @@ void goStraight() {
 	}
 }
 
+void simulatorTest() {
+	Simlink simulator;
+	while(true) {
+		simulator.setMotors(10, 5, 10, 10);
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
+}
+
 void changingAction() {
 	std::vector<int> iterations;
 	std::vector<double> rewards;
 
 	rl::FidoControlSystem learner = rl::FidoControlSystem(1, {-1}, {1}, 6);
-	learner.trainer = new net::Pruner(0.01, 0.95, 0.005, 20000, 600);
+	//learner.trainer = new net::Pruner(0.01, 0.95, 0.005, 20000, 600);
 	//learner.trainer = new net::Adadelta(0.95, 0.01, 10000);
 	for(int a = 0; a < 100; a++) {
 		learner.reset();
@@ -335,6 +345,10 @@ void changingAction() {
 			learner.applyReinforcementToLastAction(reward, {1});
 			rewards.push_back(reward);
 
+			std::cout << "-----------Reward-----------\n";
+			printStats(rewards);
+			std::cout << "----------------------\n";
+
 			iter++;
 		}
 
@@ -349,5 +363,5 @@ void changingAction() {
 
 int main() {
 	srand(time(NULL));
-	changingAction();
+	goStraight();
 }
