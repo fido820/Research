@@ -35,29 +35,41 @@ void printStats(std::vector<int> iterations) {
 
 // Set LED value proportional to visible light
 void flash() {
-	std::vector<double> choosingTimes, updateTimes;
 	std::vector<int> iterations;
+	std::vector<double> choosingTimes, updateTimes;
 
 	rl::FidoControlSystem learner = rl::FidoControlSystem(1, {0}, {1}, 11);
 	for(int a = 0; a < 200; a++) {
 		learner.reset();
 
 		int iter = 0;
+		std::vector<double> errors;
+		double average = 0;
+		for(iter = 0; iter < 1000 && (errors.size() < 3 || average > 0.4); iter++) {
+			double input = (rand() % 100) / 100.0;
 
-		for(iter = 0; iter < 1000; iter++) {
-			double input = rand() % 100;
+			clock_t begin = clock();
 			double output = (double)learner.chooseBoltzmanActionDynamic({input})[0];
-			if(fabs(input - output) < 0.2) {
-				break;
-			}
+			choosingTimes.push_back((clock() - begin) / (double)CLOCKS_PER_SEC);
+
+			std::cout << "input: " << input << "; output: " << output << "; REWARD: " << 1 - 2*fabs(output - input) << "\n";
+
+			begin = clock();
 			learner.applyReinforcementToLastAction(1 - 2*fabs(output - input), {output});
+			updateTimes.push_back((clock() - begin) / (double)CLOCKS_PER_SEC);
+
+			errors.push_back(fabs(output - input));
+			if(errors.size() > 3) errors.erase(errors.begin());
+			average = 0;
+			for(double e : errors) average += e;
+			average /= (double)errors.size();
 		}
 
 		iterations.push_back(iter);
 
 		printStats(iterations);
 		printStats(choosingTimes);
-		printStats(updateTimes);
+    printStats(updateTimes);
 	}
 }
 
@@ -395,5 +407,5 @@ void changingAction() {
 
 int main() {
   srand(time(NULL));
-  lineFollowHoloContinuous();
+  flash();
 }
