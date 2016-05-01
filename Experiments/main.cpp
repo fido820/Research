@@ -217,7 +217,7 @@ void lineFollowHoloContinuousKiwi() {
   }
 }
 
-void driveToPointDifferential(rl::Learner *learner) {
+void driveToPointDifferential(rl::FidoControlSystem *learner) {
   std::vector<int> iterations;
 
   Simlink simulator;
@@ -228,17 +228,33 @@ void driveToPointDifferential(rl::Learner *learner) {
 
     int iter = 0;
 
-    while(simulator.getDistanceOfRobotFromEmitter() > 80) {
+    while(simulator.getDistanceOfRobotFromEmitter() > 100) {
       double x, y;
+
+      for(int a = 0; a < 4; a++) {
+        simulator.getRobotDisplacementFromEmitter(&x, &y);
+        rl::Action action = learner->chooseBoltzmanActionDynamic({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
+        simulator.robot.go(action[0] * 100, action[1] * 100, 3, 20);
+
+        while(simulator.getDistanceOfRobotFromEmitter() > 400) {
+          simulator.placeRobotInRandomPosition();
+        }
+      }
+
       simulator.getRobotDisplacementFromEmitter(&x, &y);
-      rl::Action action = learner->chooseBoltzmanAction({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0}, 0.2);
+      rl::Action action = learner->chooseBoltzmanActionDynamic({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
 
       double previousDistance = simulator.getDistanceOfRobotFromEmitter();
 
       simulator.robot.go(action[0] * 100, action[1] * 100, 3, 20);
-
       simulator.getRobotDisplacementFromEmitter(&x, &y);
-      learner->applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / 1.415, {x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
+
+      //if(fabs((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / 30) > 1) std::cout << ((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / 30) << "\n";
+      learner->applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / 30, {x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
+
+      while(simulator.getDistanceOfRobotFromEmitter() > 400) {
+        simulator.placeRobotInRandomPosition();
+      }
 
       iter++;
     }
@@ -262,26 +278,27 @@ void driveToPointDiscrete() {
   }
 
   rl::QLearn learner = rl::QLearn(net, new net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4, possibleActions);
-  driveToPointDifferential(&learner);
+  //driveToPointDifferential(&learner);
 }
 
 void driveToPointContinuous() {
   std::vector<int> iterations;
 
-  Simlink simulator;
-
-  rl::FidoControlSystem learner = rl::FidoControlSystem(1, {-1, -1}, {1, 1}, 6);
+  rl::FidoControlSystem learner = rl::FidoControlSystem(3, {0, 0}, {1, 1}, 6);
+  //rl::WireFitQLearn learner(3, 2, 1, 12, 5, {-1, -1}, {1, 1}, 6, new rl::LSInterpolator(), new net::Backpropagation(0.01, 0.9, 0.01, 5000), 1, 0);
   driveToPointDifferential(&learner);
 }
 
 void driveToPointHolo() {
-  double maxDistanceComponent = 20;
+  double maxDistanceComponent = 30;
+  std::vector<double> choosingTimes, updateTimes;
   std::vector<int> iterations;
 
   Simlink simulator;
 
-  rl::FidoControlSystem learner = rl::FidoControlSystem(1, {-1, -1}, {1, 1}, 6);
-  //rl::QLearn learner = rl::QLearn(net, new net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4, possibleActions);
+  rl::FidoControlSystem learner = rl::FidoControlSystem(2, {-1, -1}, {1, 1}, 6);
+  //rl::WireFitQLearn learner(3, 2, 1, 12, 5, {-1, -1}, {1, 1}, 6, new rl::LSInterpolator(), new net::Backpropagation(0.01, 0.9, 0.1, 5000), 1, 0);
+
   for(int a = 0; a < 200; a++) {
     learner.reset();
     simulator.placeRobotInRandomPosition();
@@ -289,17 +306,27 @@ void driveToPointHolo() {
 
     int iter = 0;
 
-    while(simulator.getDistanceOfRobotFromEmitter() > 80) {
+    while(simulator.getDistanceOfRobotFromEmitter() > 100) {
       double x, y;
       simulator.getRobotDisplacementFromEmitter(&x, &y);
-      rl::Action action = learner.chooseBoltzmanAction({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0}, 0.2);
+
+      clock_t begin = clock();
+      rl::Action action = learner.chooseBoltzmanActionDynamic({x / (abs(x) + abs(y)), y / (abs(x) + abs(y))});
+      choosingTimes.push_back((clock() - begin) / (double)CLOCKS_PER_SEC);
 
       double previousDistance = simulator.getDistanceOfRobotFromEmitter();
 
       simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0] * maxDistanceComponent, action[1] * maxDistanceComponent));
 
       simulator.getRobotDisplacementFromEmitter(&x, &y);
-      learner.applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / sqrt(2*pow(maxDistanceComponent, 2)), {x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
+
+      begin = clock();
+      learner.applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / sqrt(2*pow(maxDistanceComponent, 2)), {x / (abs(x) + abs(y)), y / (abs(x) + abs(y))});
+      updateTimes.push_back((clock() - begin) / (double)CLOCKS_PER_SEC);
+
+      if(simulator.getDistanceOfRobotFromEmitter() > 700) {
+        simulator.placeRobotInRandomPosition();
+      }
 
       iter++;
     }
@@ -307,6 +334,8 @@ void driveToPointHolo() {
     iterations.push_back(iter);
 
     printStats(iterations);
+    printStats(choosingTimes);
+    printStats(updateTimes);
   }
 }
 
@@ -407,5 +436,5 @@ void changingAction() {
 
 int main() {
   srand(time(NULL));
-  flash();
+  driveToPointContinuous();
 }
