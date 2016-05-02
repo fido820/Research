@@ -233,7 +233,7 @@ void driveToPointDifferential(rl::FidoControlSystem *learner) {
 
       for(int a = 0; a < 4; a++) {
         simulator.getRobotDisplacementFromEmitter(&x, &y);
-        rl::Action action = learner->chooseBoltzmanActionDynamic({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
+        rl::Action action = learner->chooseBoltzmanAction({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0}, 1000);
         simulator.robot.go(action[0] * 100, action[1] * 100, 3, 20);
 
         while(simulator.getDistanceOfRobotFromEmitter() > 400) {
@@ -242,15 +242,21 @@ void driveToPointDifferential(rl::FidoControlSystem *learner) {
       }
 
       simulator.getRobotDisplacementFromEmitter(&x, &y);
-      rl::Action action = learner->chooseBoltzmanActionDynamic({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
+      rl::Action action = learner->chooseBoltzmanAction({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0}, 1000);
 
       double previousDistance = simulator.getDistanceOfRobotFromEmitter();
 
       simulator.robot.go(action[0] * 100, action[1] * 100, 3, 20);
       simulator.getRobotDisplacementFromEmitter(&x, &y);
 
+      simulator.robot.setRotation(-iter * 45);
+      double atan2Output = (180.0 * atan2(y, -x) / 3.1415926);
+      std::cout << "Rot: " << (360 - simulator.robot.getRotation() >= 180 ?  -simulator.robot.getRotation() : 360 - simulator.robot.getRotation()) << " " << (atan2Output) << "\n";
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+
       //if(fabs((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / 30) > 1) std::cout << ((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / 30) << "\n";
-      learner->applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / 30, {x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
+      //learner->applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / 30, {x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0});
 
       while(simulator.getDistanceOfRobotFromEmitter() > 400) {
         simulator.placeRobotInRandomPosition();
@@ -346,7 +352,7 @@ void goStraight() {
   Simlink simulator;
   rl::FidoControlSystem learner = rl::FidoControlSystem(1, {-1}, {1}, 11);
   //rl::WireFitQLearn learner = rl::WireFitQLearn(1, 1, 1, 3, 4, {-1}, {1}, 11, new rl::LSInterpolator(), new net::Backpropagation(0.01, 0.9, 0.1, 35000), 0.95, 0.4);
-  for(int a = 0; a < 200; a++) {
+  for(int a = 0; a < 50; a++) {
     learner.reset();
     simulator.placeRobotInRandomPosition();
 
@@ -358,7 +364,7 @@ void goStraight() {
     while((rotations.size() < 5 || average > 0.2) && iter < 40) {
       rl::Action action;
 
-      action = learner.chooseBoltzmanActionDynamic({ 1 });
+      action = learner.chooseBoltzmanAction({ 1 }, 0.4);
       //action = learner.chooseBoltzmanAction({ 1 }, exploration);
       simulator.robot.rotate(action[0]*maxRotate);
       //simulator.robot.go(10, 10, 5, 5);
@@ -434,7 +440,27 @@ void changingAction() {
   }
 }
 
+void drawSquare() {
+	std::vector< std::vector<int> > points = {{-6, 95, 50}, {6, 95, 50}, {6, 100, 30}, {-6, 100, 30}};
+	rl::FidoControlSystem learner(1, {0}, {1}, 4);
+
+	int currentIndex = 0;
+	while(true) {
+		int newIndex = (int)(5*learner.chooseBoltzmanActionDynamic({currentIndex*0.2})[0]);
+		learner.applyReinforcementToLastAction(1 - 0.5*fabs(newIndex-currentIndex), {currentIndex*0.2});
+
+    bool isGood = true;
+    for(int a = 0; a < 4; a++) {
+      std::cout << int(learner.chooseBoltzmanAction({a*0.25}, 0)[0]*4) << "\n";
+      std::cout << "Corr: " << (a+1 > 3 ? 0 : a+1) << "\n";
+       if(int(learner.chooseBoltzmanAction({a*0.25}, 0)[0]*4) != a+1 > 3 ? 0 : a+1) isGood = false;
+     }
+     if(isGood) break;
+    currentIndex = newIndex;
+	}
+}
+
 int main() {
   srand(time(NULL));
-  driveToPointContinuous();
+  drawSquare();
 }
