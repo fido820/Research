@@ -84,14 +84,14 @@
 	\begin{column}{\onecolwid}
 		\begin{block}{Reinforcement Learning}
 			\begin{itemize}
-				\item \textbf{Q-Learning:} Develops a function that intakes a state-action pair and outputs expected utility
-				\item Problem: the Q-function is ordinarily modeled by storing state-action pairs in a table, but this is impractical for large state spaces
+				\item \textbf{Q-Learning:} A popular reinforcement learning algorithm that develops a function that intakes a state-action pair and outputs expected utility
 				\begin{itemize}
-					\item Solution: use a function approximator instead to model the Q-function: \textbf{Artificial Neural Networks}
+					\item However, the Q-function is ordinarily modeled by storing state-action pairs in a table, but this is impractical for large state spaces
+					\item A function approximator such as \textbf{Artificial Neural Networks} can be used to model the Q-function instead
 				\end{itemize}
-				\item Problem: with regular Q-Learning, no relation is made between similar states or actions
+				\item Additionally, with regular Q-Learning no relation is made between similar states or actions
 				\begin{itemize}
-					\item Solution: can be optimized by coupling a wire-fitted interpolator with our neural network (\textbf{Wire-Fitted Q-Learning})
+					\item Can be optimized by coupling a wire-fitted interpolator with the neural network (\textbf{Wire-Fitted Q-Learning})
 				\end{itemize}
 
 				\item Complete solution: neural network is given sensor values and outputs data points on a graph of possible action vs expected utility, which are interpolated and used to generate a continuous function of action to expected reward.
@@ -100,13 +100,14 @@
 		\end{block}
 		\begin{block}{Action Selection}
 			\begin{itemize}
-				\item Problem: cannot just perform the action with the greatest expected utility: must ``explore'' to be trainable and re-trainable
+				\item Cannot just perform the action with the greatest expected utility: must ``explore'' to be trainable and re-trainable
 				\begin{itemize}
-					\item Solution: use a Softmax Probability Distribution to select an action
+					\item Use a Softmax Probability Distribution to select an action, temperature constant governs degree of exploration
 				\end{itemize}
-				\item Problem: cannot just hardcode the exploration level, Fido should stop exploring if confident in its actions and explore more if it is being retrained
+				\item However cannot just hardcode the exploration level, as Fido should stop exploring if confident in its actions and explore more if it is being retrained
 				\begin{itemize}
-					\item Solution: measure confidence using changes in the neural network weight matrix and adjust exploration accordingly
+					\item Can measure confidence using changes in the neural network weight matrix and adjust exploration accordingly
+					\item Increases universality by eliminating the need for an expert to determine the optimal exploration level for a given task
 				\end{itemize}
 			\end{itemize}
 		\end{block}
@@ -122,21 +123,21 @@
 	\end{figure}
 
 	\begin{itemize}
-		\item Problem: need to update model after receiving reward
+		\item After receiving reward, the Fido control system must update its model
 		\begin{itemize}
-			\item Solution: use Stochastic Gradient Descent to generate a new action to expected reward function for the past state, then train the neural network to output the data points that define this function.
+			\item Use Stochastic Gradient Descent to generate a new action to expected reward function for the past state, then train the neural network to output the data points that define this function
 		\end{itemize}
-		\item Problem: many neural network training algorithms require a learning rate that depends on the specifics of the task
+		\item However, many neural network training algorithms require a learning rate that depends on the specifics of the task: must be set by an expert in advance
 		\begin{itemize}
-			\item Solution: use the new Adadelta training method which dynamically adjusts learning rate, decreases latency, and results in better neural network accuracy
+			\item Can use the new Adadelta training method which dynamically adjusts learning rate, decreases latency, and results in better neural network accuracy
 		\end{itemize}
-		\item \textbf{Control sequences: } randomly train the neural network on some of Fido's past actions every reward iteration. Give greater weight to newer actions.
+		\item The control system uses \textbf{experience replay} to increase performance, randomly training the neural network on some of Fido's past actions every reward iteration while giving greater weight to newer actions.
 		\begin{itemize}
-			\item Allows training of action sequences for complex, memory-based tasks
+			\item Drastically decreases learning iterations
 		\end{itemize}
-		\item Problem: optimal neural network architecture depends on the task tasks. Ex. larger networks are more suited for complicated tasks.
+		\item Additionally, different tasks have different optimal neural network architectures. For example, larger networks are more suited for complicated tasks
 		\begin{itemize}
-			\item Solution: efficiently grow and prune Fido's neural network using neuron sensitivity approximations gathered from fluctuations in the network's weights.
+			\item Fido efficiently grows and prunes its neural network using neuron sensitivity approximations gathered from fluctuations in the network's weights.
 		\end{itemize}
 	\end{itemize}
 
