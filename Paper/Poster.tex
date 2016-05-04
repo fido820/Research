@@ -147,18 +147,18 @@
 
 
 	\begin{block}{Results}
-		Results were gathered both from simulation and hardware for a variety of tasks.  Gathered data for each task included the number of learning iterations, or how many pieces of reward it took for Fido to master the task, action selection time, or latency in probabalistic action selection, and training time, or latency in updating Fido's model.
+		Results were gathered both from simulation and hardware for a variety of tasks.    Gathered data for each task included the number of learning iterations, or how many pieces of reward it took for Fido to master the task, action selection time, and training time, or latency in updating Fido's model.
 		\begin{table}[ht]
 			\centering
-			\caption {Fido Results in Simulation} \label{tab:simresults}
+			\caption {Fido Results in Simulation (400 trials per task)} \label{tab:simresults}
 			\begin{tabularx}{.9\textwidth}{l||Y|Y|Y}
 				\toprule
 				Task        & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
-				Flash       & 6                   & 0.                  & 6               \\
-				Float to Point       & 14                  & 1                  & 6               \\
-				Drive to Point       & 17                  & 1                  & 11              \\
-				Line Following       & 18                                    & 0.               & 2               \\
-				Noisy Line Following       & 21                                   & 0.               & 105               \\
+				Flash       & 6                   & 0.                    & 6                  \\
+				Float to Point       & 14         & 1                     & 6                  \\
+				Drive to Point       & 17         & 1                     & 11                 \\
+				Line Following       & 18         & 0.                    & 2                  \\
+				Noisy Line Following & 21         & 0.                    & 105                \\
 				\bottomrule
 			\end{tabularx}
 		\end{table}
@@ -166,7 +166,7 @@
 
 		\begin{table}[ht]
 			\centering
-			\caption {Fido Results on Thing One} \label{tab:thingoneresults}
+			\caption {Fido Results on Thing One (20 trials per task)} \label{tab:thingoneresults}
 			\begin{tabularx}{.9\textwidth}{l||Y|Y|Y}
 				\toprule
 				Task              & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
@@ -178,7 +178,7 @@
 
 		\begin{table}[ht]
 			\centering
-			\caption {Fido Results on Thing Two} \label{tab:thingtworesults}
+			\caption {Fido Results on Thing Two (20 trials per task)} \label{tab:thingtworesults}
 			\begin{tabularx}{.9\textwidth}{l||Y|Y|Y}
 				\toprule
 				Task              & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
