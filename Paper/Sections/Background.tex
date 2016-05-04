@@ -1,6 +1,5 @@
 The human brain is composed of billions of neurons, interconnected electrically excitable cells that form the basis of intelligence. Each neuron has dendrites that receive electrical signals from other neurons. If the sum of these electrical signals is greater than a certain threshold value, the neuron fires, propagating a voltage down its axon and out of its synapses. These synapses can be considered the output of the neuron and are themselves connected to the dendrites of other neurons. The interconnections of these neurons form a massive network, where a huge number of inputs are processed in parallel to a set of outputs. The purpose of artificial neural networks is to simulate the mathematical properties of these neurons in order to approximate complex functions.
 
-
 \subsection{Single Artificial Neuron}
 
 \begin{figure}[ht]
@@ -17,7 +16,7 @@ An artificial neuron is simply a mathematical model of a biological neuron, and 
 	\,.
 \end{align*}
 
-A weight is a positive or negative number that governs the impact of of its respective input on the neuron's single output. The bias term is a number added to the summation of weights and inputs, allowing us to make affine transformations on the domain of the activation function. 
+A weight is a positive or negative number that governs the impact of of its respective input on the neuron's single output. The bias term is a number added to the summation of weights and inputs, allowing us to make affine transformations on the domain of the activation function.
 
 In biologically inspired neurons, the activation function is a binary step function. If the activation function's input is less than a certain threshold, the output is zero. If it is greater than the threshold, the output is one. However, a binary output can be somewhat limiting for many applications of neural networks. Many of Fido's outputs are gradient rather than binary; as an example, Fido can set the brightness of a light-emitting diode. Because of this, alternate activation functions with gradient outputs are used. One such function is the sigmoid function. In addition to being continuous, the sigmoid function is differentiable, allowing the network to be trained, and nonlinear, allowing the network to model a broader range of functions. The sigmoid function is expressed as such:
 
@@ -49,7 +48,7 @@ The output of each neuron in a layer becomes an input of every neuron in the nex
 
 Fido is a feed-forward network. Sensor inputs such as light and sound are sent into the input layer. The outputs of output layer neurons are used to change the speed of Fido's motors, the color of Fido's LEDs, and the sound of Fido's buzzers.
 
-\subsection{Back Propagation}
+\subsection{Backpropagation}
 
 Supervised learning is the modification of the weights of a neural network's neurons in order to reach a specific output from a specific set of inputs. One such method of adjusting neural networks weights is called back propagation \cite{werbos}.
 
@@ -73,3 +72,20 @@ The same approach could be taken for Neuron $C$.  However, this method cannot ca
 \end{equation}
 
 Once the error for Neuron $A$ is obtained, its trained weights can be calculated in the same fashion as done for Neuron $B$.  This pattern can be repeated throughout a larger neural network in order to converge upon the network's target output.
+
+\subsection{Q-Learning}
+
+\subsection{Q-Learning}
+
+Reinforcement learning seeks to find the optimal action to be undertaken for a given state through trial and error. In the context of Fido, an action could be the playing of a note or driving straight forwards, while the state could be the amount of light detected by the robot or how near the robot is to another object. Once an action is performed, a reward and a new state are given back to the reinforcement learning algorithm.  As actions are performed over time, the reinforcement learning algorithm sharpens its ability to receive reward.
+
+$Q$-Learning \cite{watkins} is a popular reinforcement learning algorithm that works by learning an action-value function $Q$ that takes a state-action pair as an input and outputs the expected utility value of performing that action in that state. This utility value is know as the $Q$-value. The $Q$-value is a combination of immediate reward and expected future reward. Every reward iteration the $Q$-value of an state-action pair is updated as such:
+
+\begin{equation}
+	Q(s, a) := Q(s, a)(1 - \alpha) + \alpha(R + \gamma \max Q(s_{t+1}, a))
+	\,,
+	\label{equ::updateqlearn}
+\end{equation}
+
+\noindent
+where $a$ is the action carried out, $s$ is the initial state, $R$ is the reward received, and $s_{t+1}$ is the new state. $\alpha$ is the learning rate of the algorithm. The learning rate determines the rate of convergence by diminishing or amplifying the changes made to the $Q$-value each reward iteration. $\gamma$ is the devaluation factor, which determines the weight given to future rewards. A devaluation factor approaching $\gamma=0$ will force the algorithm to only value immediate reward, while a devaluation factor approaching $\gamma=1$ will make it focused on high long term reward.  A table is used to model the $Q$ function, storing past state-action pairs and each pair's respective $Q$-value.

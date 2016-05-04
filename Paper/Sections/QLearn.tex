@@ -14,7 +14,7 @@ $Q$-Learning \cite{watkins} is a popular reinforcement learning algorithm that w
 \noindent
 where $a$ is the action carried out, $s$ is the initial state, $R$ is the reward received, and $s_{t+1}$ is the new state. $\alpha$ is the learning rate of the algorithm. The learning rate determines the rate of convergence by diminishing or amplifying the changes made to the $Q$-value each reward iteration. $\gamma$ is the devaluation factor, which determines the weight given to future rewards. A devaluation factor approaching $\gamma=0$ will force the algorithm to only value immediate reward, while a devaluation factor approaching $\gamma=1$ will make it focused on high long term reward.
 
-The $Q$-Learning algorithm had to be immediately modified in two ways to make it suitable for Fido. Its scalability had to be improved, and it had to be able to work in continuous state-action spaces.   
+The $Q$-Learning algorithm had to be immediately modified in two ways to make it suitable for Fido. Its scalability had to be improved, and it had to be able to work in continuous state-action spaces.
 
 $Q$-learning in its simplest form uses a table to model the $Q$ function, storing past state-action pairs and each pair's respective $Q$-value.  However, this strategy lacks scalability. Since Fido will have to continue to learn throughout its whole lifetime, requiring it to store a large number of $Q$-values, this strategy is rendered impractical. To allow Fido to incorporate a large amount of data into its model of $Q$ while keeping latency low, it is necessary to use a function approximator to estimate $Q$.  Feed-forward neural networks were chosen for this task for their ability to model non-linear functions, lightweight computational footprint, and high trainablility.
 
@@ -22,7 +22,7 @@ Conventional $Q$-Learning is discrete. No relation is made between states or act
 
 \subsection{Wire-Fitted Q-Learning}
 
-To accommodate continuous action-spaces, we coupled a wire-fitted moving least squares interpolator with our feed-forward neural network as described in \cite{gaskett}. 
+To accommodate continuous action-spaces, we coupled a wire-fitted moving least squares interpolator with our feed-forward neural network as described in \cite{gaskett}.
 
 Feed-forward neural networks can generalize between states in $Q$-Learning problems with discrete actions as described in \cite{rummery}. To extend this implementation to a continuous action space, our feed-forward neural network outputs discrete ``wires'' when given a state. Each wire consists of an action with its respective $Q$-value for the state given to the neural network. These wires may be interpolated to model $Q$, allowing us to get the $Q$-value of any action performed in a state given as an input to the network. The interpolator used in Fido is a wire-fitted moving least squares interpolator used in the context of a memory-based learning system \cite{baird}.
 
