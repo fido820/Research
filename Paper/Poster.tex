@@ -51,7 +51,7 @@
 			\item \textbf{Universality}: Run on any robot and perform any task, even without prior knowledge of the host
 			\item \textbf{Performance}: Require few learning iterations and low latency for quick and efficient training
 		\end{itemize}
-		To achieve this, we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a dynamically resized neural network, a uncertainty-based probabilistic action selection model, and experience replay.  The control system could be trained \textbf{with under 25\% of the input} needed by the industry standard, allowing practicality over traditional pre-programmed control systems.
+		To achieve this, we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a dynamically resized neural network, a uncertainty-based probabilistic action selection model, and experience replay.  The control system could be trained at a rate \textbf{4 times} the industry standard, allowing practicality over traditional pre-programmed control systems.
 	\end{alertblock}
 
 	\begin{block}{System Overview}
@@ -83,8 +83,8 @@
 			\item Sensor values are fed to the model, made up of a neural network and an interpolator.
 			\item The model creates a continuous function of action to expected reward.
 			\item An action is chosen using an probabalistic selection policy that dynamically adjusts Fido's exploration level as its uncertainty level changes.
-			\item Fido recieves reward ranging from -1 to 1, and the model is updated using Adadelta and stochastic gradient descent. 
-			\item Fido employs dynamic sizing of the neural network and experience replay to lower training time.
+			\item Fido recieves reward ranging from -1 to 1, and the model is updated using Adadelta and stochastic gradient descent.
+			\item Dynamic neural network resizing and experience replay are employed to reduce training time.
 		\end{enumerate}
 	\end{block}
 
@@ -116,14 +116,16 @@
 
 	\begin{column}{\onecolwid}\begin{block}{Training}
 
+	\vspace{-0.5cm}
+
 	\begin{figure}
 		\centering
-		\includegraphics[width=.9\linewidth]{Figures/FidoNeuralNetworkRendered}
+		\includegraphics[width=.8\linewidth]{Figures/FidoNeuralNetworkRendered}
 		\caption{Fido's Neural Network}
 		\label{fig:feedforward}
 	\end{figure}
 
-	\vspace{-0.5cm}
+	\vspace{-1.5cm}
 
 	\begin{itemize}
 		\item After every reward iteration, Fido adjusts its model to correct the disparity between its expected reward and the reward it just recieved using \textbf{Stochastic Gradient Descent} to modify the action-reward pairs that are outputted by its neural network.
@@ -232,6 +234,8 @@
 			\includegraphics[width=.8\linewidth]{Figures/Screenshot.png}
 			\caption{Fido Simulator Graphical User Interface}
 		\end{figure}
+
+		\vspace{-1cm}
 
 		\begin{figure}[ht]
 			\centering
