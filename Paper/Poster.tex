@@ -59,13 +59,13 @@
 		\caption*{\textbf{Fido Control System Algorithm}}\label{euclid}
 		\small
 		\begin{algorithmic}[1]
-			\State Initial empty replay memory $M$
-			\State Initial neural network with random weights
+			\State Initialize empty replay memory $M$
+			\State Initialize neural network with random weights
 			\State Uncertainty value $u \gets \infty$
 
 			\While{$true$}
 			  \State Observe state $s_t$
-			  \State Feed model $s$ and generate continuous function $r(a)$ of action versus reward
+			  \State Feed model vector $s_t$ and generate continuous function $r(a)$ of action versus reward
 			  \State Select action $a_t$ with expected reward $r_t^*$ using a Softmax action selection policy with temperature $T \propto u$ and the generated $r(a)$ function.
 
 			  \State Execute action $a_t$ and observe reward $r_t$ and new state $s_{t+1}$
@@ -122,10 +122,12 @@
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=.8\linewidth]{Figures/FeedForwardRendered}
-		\caption{Single Output Feed-forward Neural Network}
+		\includegraphics[width=.9\linewidth]{Figures/FidoNeuralNetworkRendered}
+		\caption{Fido's Neural Network}
 		\label{fig:feedforward}
 	\end{figure}
+
+	\vspace{-0.5cm}
 
 	\begin{itemize}
 		\item After every reward iteration, Fido adjusts its model to correct the disparity between its expected reward and the reward it just recieved using \textbf{Stochastic Gradient Descent} to modify the action-reward pairs that are outputted by its neural network.
