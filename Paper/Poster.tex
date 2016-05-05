@@ -149,11 +149,11 @@
 			\begin{tabularx}{.9\textwidth}{l||Y|Y|Y}
 				\toprule
 				Task        & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
-				Flash       & 6                   & 0.                    & 6                  \\
+				Flash       & 3                  & 0.                    & 6                  \\
 				Float to Point       & 14         & 1                     & 6                  \\
-				Drive to Point       & 17         & 1                     & 11                 \\
-				Line Following       & 18         & 0.                    & 2                  \\
-				Noisy Line Following & 21         & 0.                    & 105                \\
+				Drive to Point       & 16         & 1                     & 11                 \\
+				Line Following       & 10         & 0.                    & 2                  \\
+				Noisy Line Following & 13         & 0.                    & 105                \\
 				\bottomrule
 			\end{tabularx}
 		\end{table}
@@ -194,8 +194,24 @@
 \begin{column}{\sepwid}\end{column}
 
 \begin{column}{\onecolwid}
-	\begin{block}{Performance vs. Discrete Q-Learning}
-		Hola
+	\begin{block}{Fido vs. Discrete Q-Learning}
+		Fido's performance in completing various simulator tasks was tested against the industry standard of discrete Q-Learning using a neural network.  On average Fido required \textbf{four times fewer} learning iterations than discrete Q-Learning for a given task.
+		\vspace{0.1cm}
+		\begin{table}[ht]
+			\centering
+			\caption {Fido Results Compared to Discrete Q-Learning} \label{tab:simresults}
+			\vspace{-1cm}
+			\small
+			\begin{tabularx}{.9\textwidth}{lYY}
+				\toprule
+				Task        & Fido Learning Iterations & Discrete Learning Iterations \\ \midrule
+				Flash             & 3   & 16  \\
+				Float to Point    & 14  & 56  \\
+				Drive to Point    & 16  & 69  \\
+				Line Following    & 10  & ??? \\
+				\bottomrule
+			\end{tabularx}
+		\end{table}
 	\end{block}
 	\begin{block}{Implementation}
 		\setlength\parindent{48pt}
