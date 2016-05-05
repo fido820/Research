@@ -1,6 +1,6 @@
 \documentclass[final]{beamer}
 \usepackage[scale=1.24]{beamerposter}
-\usepackage{graphicx,booktabs,tabularx,algorithm,amsmath}
+\usepackage{graphicx,booktabs,tabularx,algorithm,amsmath,caption}
 \usepackage[noend]{algpseudocode}
 \usepackage{helvet,tikz}
 
@@ -55,16 +55,9 @@
 	\end{alertblock}
 
 	\begin{block}{System Overview}
-		\begin{figure}
-			\centering
-			\includegraphics[width=\linewidth]{Figures/diagramRendered.png}
-			\caption{Control System Diagram}
-		\end{figure}
-		\vspace{-1cm}
-
-
-		\begin{algorithm}
-		\caption{Fido Control System}\label{euclid}
+		\begin{algorithm}[H]
+		\caption*{\textbf{Fido Control System Algorithm}}\label{euclid}
+		\small
 		\begin{algorithmic}[1]
 			\State Initial empty replay memory $M$
 			\State Initial neural network with random weights
