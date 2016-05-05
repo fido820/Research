@@ -209,8 +209,8 @@
 \begin{column}{\sepwid}\end{column}
 
 \begin{column}{\onecolwid}
-	\begin{block}{Fido vs. Discrete Q-Learning}
-		Fido's performance in completing various simulator tasks was tested against the industry standard of discrete Q-Learning using a neural network.  On average Fido required \textbf{four times fewer} learning iterations than discrete Q-Learning for a given task.
+	\begin{alertblock}{Fido vs. Industry Standard}
+		Fido's performance in completing various simulator tasks was tested against the industry standard of discrete Q-Learning using a neural network.  On average Fido required \textbf{over four times fewer} learning iterations than discrete Q-Learning for a given task.
 		\vspace{0.1cm}
 		\begin{table}[ht]
 			\centering
@@ -223,11 +223,11 @@
 				Flash             & 3   & 16  \\
 				Float to Point    & 14  & 56  \\
 				Drive to Point    & 16  & 69  \\
-				Line Following    & 10  & ??? \\
+				Line Following    & 10  & 42 \\
 				\bottomrule
 			\end{tabularx}
 		\end{table}
-	\end{block}
+	\end{alertblock}
 	\begin{block}{Implementation}
 		\setlength\parindent{48pt}
 		\indent The Fido control system was programmed in C++, with no external dependencies. Three hardware implementations (named Things One, Two, and Three) and a simulator were constructed to test Fido's performance.  The first robot utilized a differential drive system and was powered by an Intel Edison, the second used a holonomic 3x swedish 90 degree wheel arrangment and ran on a \$5 Raspberry Pi Zero, while the third was a 4-axis controlled by a Raspberry Pi Zero.
@@ -238,7 +238,7 @@
 			\caption{Fido Simulator Graphical User Interface}
 		\end{figure}
 
-		\vspace{-0.5in}
+		%\vspace{-0.5in}
 
 		\begin{figure}[ht]
 			\centering
@@ -252,11 +252,6 @@
 
 	\begin{block}{Applications}
 		Fido provides numerous advantages over traditional procedural-programmed control systems, making it practical for a number of real world applications.  As Fido can be trained and retrained without expert knowledge, it could be useful in making robotics more accessible to consumers and small-buisness owners.  Fido can also be retrained to adapt to new and unexpected circumstances such as malfunctions in the field, an advantageous feature for militiary applications.
-	\end{block}
-
-	\begin{block}{Selected References}
-		\nocite{*}
-		{\fontsize{25}{30}\bibliographystyle{IEEEtran}\bibliography{Poster}\vspace{0.75in}}
 	\end{block}
 
 \end{column}
