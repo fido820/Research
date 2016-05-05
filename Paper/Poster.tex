@@ -228,11 +228,11 @@
 	\end{block}
 	\begin{block}{Implementation}
 		\setlength\parindent{48pt}
-		\indent The Fido control system was programmed in C++, with no external dependencies. Three hardware implementations and a simulator were constructed to test Fido's performance.  The first robot utilized a differential drive system and was powered by an Intel Edison, the second used a holonomic 3x swedish 90 degree wheel arrangment and ran on a \$5 Raspberry Pi Zero, while the third was a 4-axis jointed arm running of a Raspberry Pi Zero.
+		\indent The Fido control system was programmed in C++, with no external dependencies. Three hardware implementations (named Things One, Two, and Three) and a simulator were constructed to test Fido's performance.  The first robot utilized a differential drive system and was powered by an Intel Edison, the second used a holonomic 3x swedish 90 degree wheel arrangment and ran on a \$5 Raspberry Pi Zero, while the third was a 4-axis controlled by a Raspberry Pi Zero.
 
 		\begin{figure}
 			\centering
-			\includegraphics[width=.6\linewidth]{Figures/Screenshot.png}
+			\includegraphics[width=.8\linewidth]{Figures/Screenshot.png}
 			\caption{Fido Simulator Graphical User Interface}
 		\end{figure}
 
@@ -240,17 +240,12 @@
 
 		\begin{figure}[ht]
 			\centering
-			\includegraphics[height=.4\linewidth]{Figures/differentialKinematicsRendered.png}
-			\caption{Differential Drive Kinematics}
+			\includegraphics[width=.8\linewidth]{Figures/combinedKinematics.png}
+			\caption{Fido Hardware Implementation Kinematics}
 		\end{figure}
 
 		\vspace{-0.5in}
 
-		\begin{figure}[ht]
-			\centering
-			\includegraphics[height=.4\linewidth]{Figures/kiwiKinematicsRendered.png}
-			\caption{Holonomic Kiwi Drive Kinematics}
-		\end{figure}
 	\end{block}
 
 	\begin{block}{Applications}
