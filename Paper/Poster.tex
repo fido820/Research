@@ -51,7 +51,7 @@
 			\item \textbf{Universality}: Run on any robot and perform any task, even without prior knowledge of the host
 			\item \textbf{Performance}: Require few learning iterations and low latency for quick and efficient training
 		\end{itemize}
-		To achieve this we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a dynamically resized neural network, a confidence-based probabilistic action selection model, and history sampling.  The control system could be trained at a rate \textbf{4 times} the industry standard, allowing practicality over traditional pre-programmed control systems.
+		To achieve this, we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a dynamically resized neural network, a confidence-based probabilistic action selection model, and experience replay.  The control system could be trained at a rate \textbf{4 times} the industry standard, allowing practicality over traditional pre-programmed control systems.
 	\end{alertblock}
 
 	\begin{block}{System Overview}
@@ -63,21 +63,17 @@
 			\State Initialize neural network with random weights
 			\State Uncertainty value $u \gets \infty$
 
-			\While{$true$}
+			\Loop
 			  \State Observe state $s_t$
-			  \State Feed model vector $s_t$ and generate continuous function $r(a)$ of action versus reward
-			  \State Select action $a_t$ with expected reward $r_t^*$ using a Softmax action selection policy with temperature $T \propto u$ and the generated $r(a)$ function.
-
+			  \State Feed vector $s_t$ to model and generate continuous function $Q(a)$ of action versus reward
+			  \State Select action $a_t$ with expected reward $r_t^*$ using a Softmax action selection policy with temperature $T \propto u$ and the generated $Q(a)$ function.
 			  \State Execute action $a_t$ and observe reward $r_t$ and new state $s_{t+1}$
-
 			  \State Store ($s_t$, $a_t$, $r_t$, $s_{t+1}$) in $M$
-
 			  \State $u \propto (r_t-r_t^*)^2$
-
 			  \State Sample $n \propto {1/u}$ experiences $e$ giving weight to newer experiences.
-			  \State Perform SPSA search on model architectures with cost function as error in predicting $e$ when trained on $e$ using SGD and Adadelta
-			  \State Update current model with result of SPSA search
-			\EndWhile
+			  \State Perform a search on model architectures with cost function as error in predicting $e$ when trained on $e$ using stochastic gradient descent and Adadelta
+			  \State Update current model with result of search
+		  \EndLoop
 		\end{algorithmic}
 		\end{algorithm}
 
@@ -86,9 +82,9 @@
 		\begin{enumerate}
 			\item Sensor values are fed to a neural network.
 			\item The neural network outputs data points, each is an action and its expected reward.
-			\item A wire-fitted least squares interpolator creates a continuous function of action to expected reward using these data points.
-			\item An action is chosen using an Softmax selection policy that dynamically adjusts Fido's exploration level as its confidence level changes.
-			\item After receiving reward, the neural network is trained to output a new set of data points using Adadelta for gradient descent. Dynamic sizing of the neural network and history sampling are employed to improve neural network performance.
+			\item A wire-fitted moving least squares interpolator creates a continuous function of action to expected reward using these data points.
+			\item An action is chosen using an Softmax selection policy that dynamically adjusts Fido's exploration level as its uncertainty level changes.
+			\item After receiving reward, the neural network is trained to output a new set of data points using Adadelta for gradient descent. Dynamic sizing of the neural network and experience replay are employed to improve training time.
 		\end{enumerate}
 	\end{block}
 
@@ -106,13 +102,13 @@
 		\begin{block}{Reinforcement Learning}
 			\begin{itemize}
 				\item Fido is a \textbf{reinforcement learning system}. Its goal is to accurately estimate the reward for any action it can perform.
-				\item The system uses \textbf{Q-Learning}, a popular reinforcement learning algorithm that develops a function, the ``Q-function'', that intakes a state-action pair and outputs expected utility.
+				\item The system uses \textbf{Q-Learning}, a popular reinforcement learning algorithm that develops a function that intakes a state-action pair and outputs expected utility.
 				\item Fido utilizes a \textbf{neural network} coupled with a \textbf{wire-fitted moving least squares interpolator} instead of the traditional table to estimate its Q-function such that relations can be made between similar actions and similar states. Our neural network accepts the state and outputs a few actions along with their expected rewards. Fido interpolates these action-reward pairs to create a continuous function of action to reward.
-				\item Once Fido performs an action and receives a reward (a single \textbf{reward iteration}), the control system calculates its \textbf{uncertainty value} as the difference between its expected reward and the real reward that it has received. Higher uncertainty means that Fido is still learning or is undergoing retraining.
+				\item Once Fido performs an action and receives a reward (a single \textbf{learning iteration}), the control system calculates its \textbf{uncertainty value} as the difference between its expected and received reward. Higher uncertainty means that Fido is still learning or is undergoing retraining.
 				\item Fido selects actions to perform using a probabilistic Softmax policy which gives greater weight to actions with greater expected utility, but allows for exploration.
 				\begin{itemize}
 					\item Fido dynamically adjusts its exploration level to be proportional to its uncertainty value.
-					\item This allows Fido to continuously execute the best actions possible once it has been trained and is sure of its actions, but also allows it to explore when being retrained.  This allows for lower training times and higher average reward.
+					\item This allows Fido to continuously execute the best actions once it has been trained and is sure of its actions, but also allows it to explore when being retrained.  This results in lower training times and higher average reward.
 				\end{itemize}
 			\end{itemize}
 		\end{block}
@@ -143,7 +139,7 @@
 \end{columns}
 	\vspace{-1cm}
 	\begin{block}{Results}
-		Results were gathered both from simulation and hardware for a variety of tasks.    Gathered data for each task included the number of learning iterations, or how many pieces of reward it took for Fido to master the task, action selection time, and training time, or latency in updating Fido's model.
+		Results were gathered both from simulation and hardware for a variety of tasks.    Gathered data for each task included the number of learning iterations, average action selection time, and average training time (latency in updating Fido's model).
 		\begin{table}[ht]
 			\centering
 			\caption {Fido Results in Simulation (400 trials per task)} \label{tab:simresults}
@@ -210,7 +206,7 @@
 
 \begin{column}{\onecolwid}
 	\begin{alertblock}{Fido vs. Industry Standard}
-		Fido's performance in completing various simulator tasks was tested against the industry standard of discrete Q-Learning using a neural network.  On average Fido required \textbf{over four times fewer} learning iterations than discrete Q-Learning for a given task.
+		Fido's performance in completing various simulator tasks was tested against the industry standard of discrete Q-Learning using a neural network.  On average, Fido required \textbf{over four times fewer} learning iterations than discrete Q-Learning for a given task.
 		\vspace{0.1cm}
 		\begin{table}[ht]
 			\centering
@@ -229,15 +225,13 @@
 	\end{alertblock}
 	\begin{block}{Implementation}
 		\setlength\parindent{48pt}
-		\indent The Fido control system was programmed in C++, with no external dependencies. Three hardware implementations (named Things One, Two, and Three) and a simulator were constructed to test Fido's performance.  The first robot utilized a differential drive system and was powered by an Intel Edison, the second used a holonomic 3x swedish 90 degree wheel arrangment and ran on a \$5 Raspberry Pi Zero, while the third was a 4-axis controlled by a Raspberry Pi Zero.
+		\indent The Fido control system was programmed in C++, with no external dependencies. Three hardware implementations (named Things One, Two, and Three) and a simulator were constructed to test Fido's performance.  The first robot utilized a differential drive system and was powered by an Intel Edison, the second used a holonomic wheel arrangement and ran on a \$5 Raspberry Pi Zero, while the third was a 4-axis arm controlled by a Raspberry Pi Zero.  The ``things'' were administered reward over Wi-Fi from a cross-platform mobile app.
 
 		\begin{figure}
 			\centering
 			\includegraphics[width=.8\linewidth]{Figures/Screenshot.png}
 			\caption{Fido Simulator Graphical User Interface}
 		\end{figure}
-
-		%\vspace{-0.5in}
 
 		\begin{figure}[ht]
 			\centering
