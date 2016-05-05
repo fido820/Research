@@ -1,6 +1,7 @@
 \documentclass[final]{beamer}
 \usepackage[scale=1.24]{beamerposter}
-\usepackage{graphicx,booktabs,tabularx}
+\usepackage{graphicx,booktabs,tabularx,algorithm,amsmath}
+\usepackage[noend]{algpseudocode}
 \usepackage{helvet,tikz}
 
 \usetikzlibrary{arrows,fit,patterns}
@@ -60,6 +61,33 @@
 			\caption{Control System Diagram}
 		\end{figure}
 		\vspace{-1cm}
+
+
+		\begin{algorithm}
+		\caption{Fido Control System}\label{euclid}
+		\begin{algorithmic}[1]
+			\State Initial empty replay memory $M$
+			\State Initial neural network with random weights
+			\State Uncertainty value $u \gets \infty$
+
+			\While{$true$}
+			  \State Observe state $s_t$
+			  \State Feed model $s$ and generate continuous function $r(a)$ of action versus reward
+			  \State Select action $a_t$ with expected reward $r_t^*$ using a Softmax action selection policy with temperature $T \propto u$ and the generated $r(a)$ function.
+
+			  \State Execute action $a_t$ and observe reward $r_t$ and new state $s_{t+1}$
+
+			  \State Store ($s_t$, $a_t$, $r_t$, $s_{t+1}$) in $M$
+
+			  \State $u \propto (r_t-r_t^*)^2$
+
+			  \State Sample $n \propto {1/u}$ experiences $e$ giving weight to newer experiences.
+			  \State Perform SPSA search on model architectures with cost function as error in predicting $e$ when trained on $e$ using SGD and Adadelta
+			  \State Update current model with result of SPSA search
+			\EndWhile
+		\end{algorithmic}
+		\end{algorithm}
+
 		From a macro perspective, Fido can be viewed as a ``black box'' system, where a set of inputs (such as sensors) go in and a set of outputs (actions) go out.  Fido's goal is to maximize given reward by altering its behavior.  The system operates through the following steps:
 
 		\begin{enumerate}
