@@ -51,7 +51,7 @@
 			\item \textbf{Universality}: Run on any robot and perform any task, even without prior knowledge of the host
 			\item \textbf{Performance}: Require few learning iterations and low latency for quick and efficient training
 		\end{itemize}
-		To achieve this, we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a dynamically resized neural network, a confidence-based probabilistic action selection model, and experience replay.  The control system could be trained at a rate \textbf{4 times} the industry standard, allowing practicality over traditional pre-programmed control systems.
+		To achieve this, we developed a novel machine learning algorithm utilizing wire-fitted Q-Learning with a dynamically resized neural network, a uncertainty-based probabilistic action selection model, and experience replay.  The control system could be trained \textbf{with under 25\% of the input} needed by the industry standard, allowing practicality over traditional pre-programmed control systems.
 	\end{alertblock}
 
 	\begin{block}{System Overview}
@@ -80,11 +80,11 @@
 		From a macro perspective, Fido can be viewed as a ``black box'' system, where a set of inputs (such as sensors) go in and a set of outputs (actions) go out.  Fido's goal is to maximize given reward by altering its behavior.  The system operates through the following steps:
 
 		\begin{enumerate}
-			\item Sensor values are fed to a neural network.
-			\item The neural network outputs data points, each is an action and its expected reward.
-			\item A wire-fitted moving least squares interpolator creates a continuous function of action to expected reward using these data points.
-			\item An action is chosen using an Softmax selection policy that dynamically adjusts Fido's exploration level as its uncertainty level changes.
-			\item After receiving reward, the neural network is trained to output a new set of data points using Adadelta for gradient descent. Dynamic sizing of the neural network and experience replay are employed to improve training time.
+			\item Sensor values are fed to the model, made up of a neural network and an interpolator.
+			\item The model creates a continuous function of action to expected reward.
+			\item An action is chosen using an probabalistic selection policy that dynamically adjusts Fido's exploration level as its uncertainty level changes.
+			\item Fido recieves reward ranging from -1 to 1, and the model is updated using Adadelta and stochastic gradient descent. 
+			\item Fido employs dynamic sizing of the neural network and experience replay to lower training time.
 		\end{enumerate}
 	\end{block}
 
@@ -103,12 +103,12 @@
 			\begin{itemize}
 				\item Fido is a \textbf{reinforcement learning system}. Its goal is to accurately estimate the reward for any action it can perform.
 				\item The system uses \textbf{Q-Learning}, a popular reinforcement learning algorithm that develops a function that intakes a state-action pair and outputs expected utility.
-				\item Fido utilizes a \textbf{neural network} coupled with a \textbf{wire-fitted moving least squares interpolator} instead of the traditional table to estimate its Q-function such that relations can be made between similar actions and similar states. Our neural network accepts the state and outputs a few actions along with their expected rewards. Fido interpolates these action-reward pairs to create a continuous function of action to reward.
-				\item Once Fido performs an action and receives a reward (a single \textbf{learning iteration}), the control system calculates its \textbf{uncertainty value} as the difference between its expected and received reward. Higher uncertainty means that Fido is still learning or is undergoing retraining.
+				\item Fido utilizes a \textbf{neural network} coupled with a \textbf{wire-fitted moving least squares interpolator}, instead of the traditional table, to estimate its reward. This allows relations to be made between similar actions and similar states. Our neural network accepts the state and outputs a few actions along with their expected rewards. Fido interpolates these action-reward pairs to create a continuous function of action to reward.
+				\item Once Fido performs an action and receives a reward (a single \textbf{learning iteration}), the control system calculates its \textbf{uncertainty value} as the difference between its expected and received reward. Higher uncertainty means that Fido is still learning or undergoing retraining.
 				\item Fido selects actions to perform using a probabilistic Softmax policy which gives greater weight to actions with greater expected utility, but allows for exploration.
 				\begin{itemize}
 					\item Fido dynamically adjusts its exploration level to be proportional to its uncertainty value.
-					\item This allows Fido to continuously execute the best actions once it has been trained and is sure of its actions, but also allows it to explore when being retrained.  This results in lower training times and higher average reward.
+					\item This allows Fido not only to execute the what it thinks are the best actions once it has fully learned a task, but also to explore when being retrained.  This results in lower training times and higher average reward.
 				\end{itemize}
 			\end{itemize}
 		\end{block}
@@ -128,7 +128,7 @@
 	\begin{itemize}
 		\item After every reward iteration, Fido adjusts its model to correct the disparity between its expected reward and the reward it just recieved using \textbf{Stochastic Gradient Descent} to modify the action-reward pairs that are outputted by its neural network.
 		\item Fido trains its neural network using the Adadelta training method, eliminating the need to specify a hard-coded learning rate.
-		\item Fido uses \textbf{experience replay}, the practice of training a system on past states, actions, and rewards to decrease training time. Fido gives weight to newer experiences. If uncertainty value of the model begins to rise, Fido samples fewer experiences, because past rewards will be incorrect if Fido is being trained on a new task.
+		\item Fido uses \textbf{experience replay}, the practice of training a system on past states, actions, and rewards to decrease training time. Every learning iteration, Fido is trained on past experiences.  Newer experiences are more likely to be sampled for retraining. If uncertainty value of the model begins to rise, Fido samples fewer experiences, because past rewards will be incorrect if Fido is being trained on a new task.
 		\item After each reward iteration, Fido efficiently grows and prunes its neural network to the optimal size and architecture for the task at hand, using neuron sensitivity approximations.
 	\end{itemize}
 
@@ -139,7 +139,7 @@
 \end{columns}
 	\vspace{-1cm}
 	\begin{block}{Results}
-		Results were gathered both from simulation and hardware for a variety of tasks.    Gathered data for each task included the number of learning iterations, average action selection time, and average training time (latency in updating Fido's model).
+		Results were gathered both from simulation and hardware for a variety of tasks.    Gathered data for each task includes the number of learning iterations (pieces of reward necessary to learn the task), average action selection time (latency in selecting an action), and average training time (latency in updating Fido's model).
 		\begin{table}[ht]
 			\centering
 			\caption {Fido Results in Simulation (400 trials per task)} \label{tab:simresults}
