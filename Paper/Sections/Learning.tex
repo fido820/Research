@@ -69,7 +69,8 @@ This error can be calculated as:
 where $q$ is the old $Q$-value.
 Using Equation \ref{equ::wirefiterrorfunction} as our function to be minimized and the partial derivative of the wire-fitting function with respect to each action vector and each q-value, we may compute the partial derivatives of our cost function.
 Using these, new wires may be calculated for Fido's previous state using gradient descent.
-Fido's neural network may be trained using back propagation to output these new wires when given the previous state.
+
+Fido's neural network may be trained is trained to output these wires using the Adadelta training algorithm. Adadelta is a variant of backpropgation that dynamically adjusts its learning rate to an optimum value, allowing for lower latency. This increases the universality of Fido, since backpropagation's learning rate is task specific. 
 
 \subsection{Uncertainty Value}
 
