@@ -53,6 +53,25 @@ Fido was able to master both a holonomic and differential-drive motor control sy
 All tasks showed low numbers of reward iterations and low latency, allowing Fido to learn quickly and efficiently.
 The task that was most difficult for Fido, ``Drive,'' took a median of 16 reward iterations, well within the patience of a human.
 
+\subsubsection{Comparison to Industry Standard of Q-Learning with a Neural Network}
+
+Fido's performance in completing the above simulator tasks was tested against the industry standard of discrete Q-Learning using a neural network.  On average, Fido required \textbf{over four times fewer} learning iterations than discrete Q-Learning for a given task.
+
+\begin{table}[ht]
+	\centering
+	\small
+		\begin{tabular}{lYY}
+			\toprule
+		Task        & Fido Learning Iterations & Discrete Learning Iterations \\ \midrule
+			Flash             & 3   & 16  \\
+		Float to Point    & 14  & 56  \\
+		Drive to Point    & 16  & 69  \\
+			Line Following    & 10  & 42 \\
+		\caption {Fido Results Compared to Discrete Q-Learning}
+			\label{tab:simindustrystandardresults}
+	\end{tabular}
+\end{table}
+
 \subsection{Results in Hardware}
 
 Data was next collected from Fido's hardware implementations to gage performance with human given feedback in real world situations.
