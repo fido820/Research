@@ -75,8 +75,6 @@ Once the error for Neuron $A$ is obtained, its trained weights can be calculated
 
 \subsection{Q-Learning}
 
-\subsection{Q-Learning}
-
 Reinforcement learning seeks to find the optimal action to be undertaken for a given state through trial and error. In the context of Fido, an action could be the playing of a note or driving straight forwards, while the state could be the amount of light detected by the robot or how near the robot is to another object. Once an action is performed, a reward and a new state are given back to the reinforcement learning algorithm.  As actions are performed over time, the reinforcement learning algorithm sharpens its ability to receive reward.
 
 $Q$-Learning \cite{watkins} is a popular reinforcement learning algorithm that works by learning an action-value function $Q$ that takes a state-action pair as an input and outputs the expected utility value of performing that action in that state. This utility value is know as the $Q$-value. The $Q$-value is a combination of immediate reward and expected future reward. Every reward iteration the $Q$-value of an state-action pair is updated as such:
