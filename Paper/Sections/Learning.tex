@@ -73,7 +73,7 @@ Fido's neural network may be trained using back propagation to output these new 
 
 \subsection{Uncertainty Value}
 
-Fido calculates the "uncertainty" of its system. Such a value should lower as Fido learns a task and rise if Fido's task changes. This value is useful in adjusting a number hyperparameters that are detailed in the next few sections, such as the exploratory level of the system. Every learning iteration, after updating its wires using stochastic gradient descent, Fido calculates its uncertainty value as the means squared error between its original set of wires and its newly updated set of wires.
+Fido calculates the "uncertainty" $u$ of its system. Such a value should lower as Fido learns a task and rise if Fido's task changes. This value is useful in adjusting a number hyperparameters that are detailed in the next few sections, such as the exploratory level of the system. Every learning iteration, after updating its wires using stochastic gradient descent, Fido calculates its uncertainty value as the means squared error between its original set of wires and its newly updated set of wires.
 
 \subsection{Action Selection}
 
@@ -99,6 +99,8 @@ $T$ is the temperature, or exploration level.
 As $T$ approaches infinity, a random action is chosen.
 As $T$ tends toward 0, the best action is chosen.
 Fido keeps $T$ at a constant value around $T \approx 0.15$ throughout its lifetime to encourage occasional, continued exploration.
+
+$T$ is set proportional to Fido's uncertainty value, so that Fido rapidly explores when it is first initialized or is being retrained. This allows Fido to converge on tasks in fewer reward iterations than if $T$ were set as a constant. As Fido learns a task, $T$ will approach 0. This means that Fido will accurately perform a task when sure of its actions, increasing Fido's average reward over other systems.
 
 \subsection{Experience Replay}
 
