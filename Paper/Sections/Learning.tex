@@ -73,6 +73,8 @@ Fido's neural network may be trained using back propagation to output these new 
 
 \subsection{Uncertainty value}
 
+Fido calculates the "uncertainty" of its system. Such a value should lower as Fido learns a task and rise if Fido's task changes. This value is useful in adjusting a number hyperparameters that are detailed in the next few sections, such as the exploratory level of the system. Every learning iteration, after updating its wires using stochastic gradient descent, Fido calculates its uncertainty value as the means squared error between its original set of wires and its newly updated set of wires. 
+
 \subsection{Action Selection}
 
 $Q$-learn requires that actions are selected to be performed.
