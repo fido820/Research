@@ -86,36 +86,36 @@ One such method of adjusting neural networks weights is called back propagation 
 \end{figure}
 
 Neural networks learning through back propagation are trained through example.
- Example inputs (known as training sets) are linked to a particular target output, forming a training pair.
- The first step of training is to pass in an arbitrary training set to a neural network with randomly generated weights.
- The error $\delta$ for an output neuron is defined as the difference between the actual output and the target output for that training set.
+Example inputs (known as training sets) are linked to a particular target output, forming a training pair.
+The first step of training is to pass in an arbitrary training set to a neural network with randomly generated weights.
+The error $\delta$ for an output neuron is defined as the difference between the actual output and the target output for that training set.
 As an example we will use the single connection described in Figure \ref{fig:backprop}.
 The neural network in this figure has only an input layer consisting of Neuron $A$ and an output layer consisting of Neurons $A$ and $B$.
 $W_{AB}$  and $W_{AC}$ are the weights between the neurons.
 We first determine the Neuron $B$ error $\delta_B$ as $\text{Target}_B - \text{Output}_B$.
-  Next we modify weight $W_{AB}$ as follows, defining $W_{AB}^{+}$ as the newly trained weight:
+ Next we modify weight $W_{AB}$ as follows, defining $W_{AB}^{+}$ as the newly trained weight:
 
 \begin{equation}
 	W_{AB}^{+} = W_{AB} + (\delta_B \text{Output}_A)\,.
 \end{equation}
 
 The same approach could be taken for Neuron $C$.
- However, this method cannot calculate an improved weight for hidden layer neurons such as Neuron $A$, as there is no predefined target.
- Therefore we must calculate the error of $A$ indirectly by back propagating from the two output layer neurons, for which the error is already known:
+However, this method cannot calculate an improved weight for hidden layer neurons such as Neuron $A$, as there is no predefined target.
+Therefore we must calculate the error of $A$ indirectly by back propagating from the two output layer neurons, for which the error is already known:
 
 \begin{equation}
 	\delta_A = W_{AB}\delta_B + W_{AC}\delta_C \,.
 \end{equation}
 
 Once the error for Neuron $A$ is obtained, its trained weights can be calculated in the same fashion as done for Neuron $B$.
- This pattern can be repeated throughout a larger neural network in order to converge upon the network's target output.
+This pattern can be repeated throughout a larger neural network in order to converge upon the network's target output.
 
 \subsection{Q-Learning}
 
 Reinforcement learning seeks to find the optimal action to be undertaken for a given state through trial and error.
 In the context of Fido, an action could be the playing of a note or driving straight forwards, while the state could be the amount of light detected by the robot or how near the robot is to another object.
 Once an action is performed, a reward and a new state are given back to the reinforcement learning algorithm.
- As actions are performed over time, the reinforcement learning algorithm sharpens its ability to receive reward.
+As actions are performed over time, the reinforcement learning algorithm sharpens its ability to receive reward.
 
 $Q$-Learning \cite{watkins} is a popular reinforcement learning algorithm that works by learning an action-value function $Q$ that takes a state-action pair as an input and outputs the expected utility value of performing that action in that state.
 This utility value is know as the $Q$-value.
@@ -134,4 +134,4 @@ $\alpha$ is the learning rate of the algorithm.
 The learning rate determines the rate of convergence by diminishing or amplifying the changes made to the $Q$-value each reward iteration.
 $\gamma$ is the devaluation factor, which determines the weight given to future rewards.
 A devaluation factor approaching $\gamma=0$ will force the algorithm to only value immediate reward, while a devaluation factor approaching $\gamma=1$ will make it focused on high long term reward.
- A table is used to model the $Q$ function, storing past state-action pairs and each pair's respective $Q$-value.
+A table is used to model the $Q$ function, storing past state-action pairs and each pair's respective $Q$-value.
