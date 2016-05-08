@@ -1,26 +1,6 @@
-% Intro text here; a sentence or two (I don't think it's necessary)
-\subsection{Q-Learning}
-
-Reinforcement learning seeks to find the optimal action to be undertaken for a given state through trial and error. In the context of Fido, an action could be the playing of a note or driving straight forwards, while the state could be the amount of light detected by the robot or how near the robot is to another object. Once an action is performed, a reward and a new state are given back to the reinforcement learning algorithm.  As actions are performed over time, the reinforcement learning algorithm sharpens its ability to receive reward.
-
-$Q$-Learning \cite{watkins} is a popular reinforcement learning algorithm that works by learning an action-value function $Q$ that takes a state-action pair as an input and outputs the expected utility value of performing that action in that state. This utility value is know as the $Q$-value. The $Q$-value is a combination of immediate reward and expected future reward. Every reward iteration the $Q$-value of an state-action pair is updated as such:
-
-\begin{equation}
-	Q(s, a) := Q(s, a)(1 - \alpha) + \alpha(R + \gamma \max Q(s_{t+1}, a))
-	\,,
-	\label{equ::updateqlearn}
-\end{equation}
-
-\noindent
-where $a$ is the action carried out, $s$ is the initial state, $R$ is the reward received, and $s_{t+1}$ is the new state. $\alpha$ is the learning rate of the algorithm. The learning rate determines the rate of convergence by diminishing or amplifying the changes made to the $Q$-value each reward iteration. $\gamma$ is the devaluation factor, which determines the weight given to future rewards. A devaluation factor approaching $\gamma=0$ will force the algorithm to only value immediate reward, while a devaluation factor approaching $\gamma=1$ will make it focused on high long term reward.
-
-The $Q$-Learning algorithm had to be immediately modified in two ways to make it suitable for Fido. Its scalability had to be improved, and it had to be able to work in continuous state-action spaces.
-
-$Q$-learning in its simplest form uses a table to model the $Q$ function, storing past state-action pairs and each pair's respective $Q$-value.  However, this strategy lacks scalability. Since Fido will have to continue to learn throughout its whole lifetime, requiring it to store a large number of $Q$-values, this strategy is rendered impractical. To allow Fido to incorporate a large amount of data into its model of $Q$ while keeping latency low, it is necessary to use a function approximator to estimate $Q$.  Feed-forward neural networks were chosen for this task for their ability to model non-linear functions, lightweight computational footprint, and high trainablility.
-
-Conventional $Q$-Learning is discrete. No relation is made between states or actions, and every action for each state must be performed individually in a noisy feedback system to determine its $Q$-value. However, Fido will work in a large, continuous state-action spaces where relations made between (state-action, $Q$-value) pairs can drastically reduce the number of reward iterations needed for convergence. An example of a task that would benefit from continuity is teaching Fido to adjust the speed of its motors based on the intensity of light that the robot detects. There is an obvious gradient relation between the (state-action, $Q$-value) pairs in this task and with a limited number of $Q$-values known, it is possible to correctly model $Q$.
-
 \subsection{Wire-Fitted Q-Learning}
+
+The $Q$-Learning algorithm had to be immediately modified to be able to work in continuous state-action spaces for it to be suitable for Fido. Conventional $Q$-Learning is discrete. No relation is made between states or actions, and every action for each state must be performed individually in a noisy feedback system to determine its $Q$-value. However, Fido will work in a large, continuous state-action spaces where relations made between (state-action, $Q$-value) pairs can drastically reduce the number of reward iterations needed for convergence. An example of a task that would benefit from continuity is teaching Fido to adjust the speed of its motors based on the intensity of light that the robot detects. There is an obvious gradient relation between the (state-action, $Q$-value) pairs in this task and with a limited number of $Q$-values known, it is possible to correctly model $Q$.
 
 To accommodate continuous action-spaces, we coupled a wire-fitted moving least squares interpolator with our feed-forward neural network as described in \cite{gaskett}.
 
@@ -68,7 +48,9 @@ where $a$ is the parameter to be updated, $\gamma$ is the learning rate, and $\D
 
 where $q$ is the old $Q$-value. Using Equation \ref{equ::wirefiterrorfunction} as our function to be minimized and the partial derivative of the wire-fitting function with respect to each action vector and each q-value, we may compute the partial derivatives of our cost function. Using these, new wires may be calculated for Fido's previous state using gradient descent. Fido's neural network may be trained using back propagation to output these new wires when given the previous state.
 
-\subsection{Boltzmann Probability Distribution Selection Policy}
+\subsection{Uncertainty value}
+
+\subsection{Action Selection}
 
 $Q$-learn requires that actions are selected to be performed. There are a number of approaches to choosing this action, and each has a large affect on the behavior of the learning implementation. The most common approach is to simply pick the action with the best $Q$-value for the current state. However this strategy stifles exploration of the state-action space, increasing the time of convergence on a task, hurting the retrain-ability of the model, and giving a bias towards an actor's starting policy, which is random. This problem is compounded in the case of Fido due to the large state and action spaces that Fido must explore. Another common method of action selection is to choose each action randomly for a set number of reward iterations, and then to switch to choosing the action with the highest $Q$-value. This plan improves upon the first by allowing for a period of exploration, but is not suited for Fido. During its lifetime, Fido must have the ability to learn new tasks and be retrained by the operator providing feedback, and so, must continuously explore its state space.
 
@@ -81,3 +63,7 @@ Fido selects actions probabilistically using a Boltzmann or soft-max distributio
 \end{equation}
 
 $T$ is the temperature, or exploration level. As $T$ approaches infinity, a random action is chosen. As $T$ tends toward 0, the best action is chosen. Fido keeps $T$ at a constant value around $T \approx 0.15$ throughout its lifetime to encourage occasional, continued exploration.
+
+\subsection{Experience Replay}
+
+\subsection{Dynamic Neural Network Architecture}
