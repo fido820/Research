@@ -138,4 +138,11 @@ where $n$ is the current epoch; $u$ is our model parameters, the number of wires
 
 where $\Delta_n$ is a random perturbation vector and $J$ is the cost function. For Fido, $J$ is the error of the the model $m_n$ that is defined by $u_n$ on a sample of experiences after a period of training.
 
-To optimize the sampling of $J$, Fido derives $m_n$'s neural network from the Fido's current, already trained network. When $m_n$'s neural network is smaller than the current network, Fido derives $m_n$'s neural network by applying a pruning algorithm to its current neural network. This decreases the starting error of $m_n$. When $m_n$'s neural network is larger than the current network, new neurons to Fido's current neural network are added randomly to derive $m_n$'s neural network.
+To optimize the sampling of $J$, Fido creates $m_n$'s neural network by adding and subtracting the Fido's current network since Fido's model at any given time will have a relatively low $J$. Fido subtracts "unimportant" neurons using a pruning algorithm so as to decrease $J(m_n)$. Our pruning algorithm estimates the effect of pruning weight $w_{ij}$ on $J$. This estimate using values recorded during backpropagation or Adadelta and is given as:
+
+\begin{equation}
+	\sum_{b=0}^{B}\cfrac{\delta E}{\delta w_{ij}}\Delta w_{ij}(b)\cfrac{w^f_{ij}}{w^f_{ij}-w^i_{ij}}
+	\label{equ::sensitivity}
+\end{equation}
+
+Neurons whose weights have the smallest impact on $J$ should be pruned.
