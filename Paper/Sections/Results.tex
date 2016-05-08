@@ -56,7 +56,7 @@ The task that was most difficult for Fido, ``Drive,'' took a median of 16 reward
 \subsection{Results in Hardware}
 
 Data was next collected from Fido's hardware implementations to gage performance with human given feedback in real world situations.
-Reward was administered through the mobile application previously discussed.
+Reward was administered through the mobile application previously discussed.  25 trials were done for each task to gather the data shown in the below tables.  As with the simulation, reward iterations values shown are the medians of the data collected while time data shown is the mean of the data collected.
 
 \subsubsection{Thing One Results}
 
@@ -70,8 +70,6 @@ Every fourth action that Fido made was chosen as a reward iteration, and Fido wa
 This reward value was chosen by the tester based on whether Fido moved toward the point or not.
 Fido completed each trial when it was within 10 cm of the point.
 
-25 trials were done for each task to gather the data shown in Table \ref{tab:data2}.
-As with the simulation, reward iterations values shown are the medians of the data collected while time data shown is the mean of the data collected.
 
 \begin{table}[ht]
 	\centering
@@ -87,3 +85,54 @@ As with the simulation, reward iterations values shown are the medians of the da
 
 Performance was slower on the hardware implementation than in simulation for the drive to point task due to the limited computation power of the Intel Edison compute model compared to modern desktop computers.
 However, the results still demonstrated Fido's real world applicability through its ability to perform outside of a simulation environment.
+
+\subsubsection{Thing Two Results}
+
+The second hardware implementation constructed, nicknamed ``Thing Two,'' was tasked to master its complex holonomic drive system and numerous sensors to master tasks with limited preprocessing.
+The first task administered asked Fido to drive straight using its three 90$^{\circ}$ Swedish wheels, requiring Fido to determinethe correct ratio of motor values outputted.
+Fido was administered reward somewhat subjectively by a human operator, being given positive reward when it drove in a less lopsided fashion.
+Next, Fido was tasked with following a line.
+Fido's line sensor reported whether it was to the left or right of a line.
+A course was laid out using black electrical tape for Thing Two to learn on.
+Training was performed by placing Thing Two to the left or right of a line.
+If the robot moved towards the line, it was administered positive feedback.
+If the robot moved away from the line, it would receive negative feedback.
+Fido was also trained to follow a ball using its ZX sensor, which reported the location of an object in front of it in the horizontal and vertical dimensions.
+Similiarly, Fido was administered positive reward if it drove towards the ball, and negative reward if it drove away.
+Finally, Fido's retrainability and applicability was tested in a task that involved loading a pretrained line following model, unplugging a motor, and retraining the robot to compensate.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{@{}lccc@{}}
+		\toprule
+		Task              & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
+		Drive Straight         & 13             & 2                     & 215                \\
+		Line Following         & 15             & 21                    & 398                \\
+		Fetch                  & 8              & 1                     & 246                \\
+		Limping Line Following & 6              & 20                    & 464                \\ \bottomrule
+	\end{tabular}
+	\caption {Number of Learning Iterations, Action Selection Time, and Training Time Per Iteration for Thing Two Tasks} \label{tab:thingtworesults}
+\end{table}
+
+\subsubsection{Thing Three Results}
+
+The last hardware implementation constructed was a four axis robotic arm, nicknamed ``Thing Three.''
+Thing Three was first tasked with drawing a square.
+As output, Fido could choose from a set of ``waypoints,'' predefined sets of angle positions representing important positions in the operating enviroment.
+As input, Fido was given its current waypoint.
+If Fido drew a correct line in the sequence of drawing a square, it was given positive reward.
+Next, Thing Three was trained to hit a ball with a paddle (or ``play ping pong'') using its two ultrasonic sensors to sense ball position.
+Fido was able to adjust its joint rotations as outputs to hit the ball.
+In training, positive feedback was administered if Thing Three hit the paddle towards the ball, while negative feedback was given if Thing Three moved in the opposite direction.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{@{}lccc@{}}
+		\toprule
+		Task              & Learning Iterations & Action Selection (ms) & Training Time (ms) \\ \midrule
+		Draw Square         & 5                   & 5                    & 40                 \\
+		Ping Pong          & 8                  & 3                    & 379                \\
+		\bottomrule
+	\end{tabular}
+	\caption {Number of Learning Iterations, Action Selection Time, and Training Time Per Iteration for Thing Three Tasks} \label{tab:thingthreeresults}
+\end{table}
