@@ -21,11 +21,13 @@ Fido was fed the ratio of its $x$ displacement to its $y$ displacement from its 
 Reward was calculated as the difference between Fido's distance away from the target point before performing the action and Fido's distance from the target point after performing the action.
 Fido completed each trial when it was within 60 pixels of the point.
 
-Fido's last challenge, called ``Follow,'' was to perform the classic robotic task of line following by controlling the motors of the simulator's differential drive system.
+Fido's fourth challenge, called ``Line Follow,'' was to perform the classic robotic task of line following by controlling the motors of the simulator's differential drive system.
 At the start of each trial, Fido was placed on  a line with a random rotation.
 Fido was fed the ratio of its $x$ displacement to its $y$ displacement from the closest point on the line as well as its rotation.
 Reward was calculated as the difference between Fido's distance away from the line before performing the action and Fido's distance from the line after performing the action.
 Fido completed each trial when it had stayed within 60 pixels of the line for 10 consecutive actions.
+
+Finally, in ``Noisy Line Follow,'' Fido was trained to line follow in the exact same matter as in ``Line Follow'' with the exception of being fed one additional, completely random input.
 
 \subsubsection{Simulation Findings}
 
@@ -42,7 +44,8 @@ The time data shown above is the mean of the data collected.
 		Flash       & 6                   & 0.                 & 28                    \\
 		Float       & 14                  & 1                  & 63                    \\
 		Drive       & 16                  & 1                  & 94                    \\
-		Line Follow & 10                  & 0.                 & 90.				   \\ \bottomrule
+		Line Follow       & 10                  & 0.                 & 90.                    \\
+		Noisy Line Follow & 12                 & 0.                 & 321.				   \\ \bottomrule
 	\end{tabular}
 	\caption{Number of Learning Iterations, Action Selection Time, and Training Time Per Iteration for Fido Simulation Tasks}
 	\label{tab:data}
@@ -52,6 +55,8 @@ The data collected through the simulator demonstrates the prowess of the Fido co
 Fido was able to master both a holonomic and differential-drive motor control system (the ``Float'' and ``Drive'' tasks), proving its hardware agnostic capabilities.
 All tasks showed low numbers of reward iterations and low latency, allowing Fido to learn quickly and efficiently.
 The task that was most difficult for Fido, ``Drive,'' took a median of 16 reward iterations, well within the patience of a human.
+In addition, Fido was able to effectively filter out noise presented to it in the ``Noisy Line Follow'' task with only a two reward iteration increase. T
+his is in contrast with most other machine learning algorithms which require extensive feature detection as a prerequisite for convergence.  
 
 \subsubsection{Comparison to Industry Standard of Q-Learning with a Neural Network}
 
