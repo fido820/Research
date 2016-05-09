@@ -109,7 +109,7 @@ $\alpha$ is the learning rate of the algorithm.
 The learning rate determines the rate of convergence by diminishing or amplifying the changes made to the $Q$-value each learning iteration.
 $\gamma$ is the devaluation factor, which determines the weight given to future rewards.
 A devaluation factor approaching $\gamma=0$ will force the algorithm to only value immediate reward, while a devaluation factor approaching $\gamma=1$ will make it focused on high long term reward.
-A
- table was originally used to model the $Q$ function, storing state-action pairs and each pair's respective $Q$-value.
+
+A table was originally used to model the $Q$ function, storing state-action pairs and each pair's respective $Q$-value.
 However, in recent years, neural networks have been increasingly used to model the $Q$-function, since they can generalize between similar states, and so, converge in less time than a table based implementation.
 For the purposes of this paper, the "industry standard" is discrete-action $Q$-learning coupled with feed-forward neural networks.
