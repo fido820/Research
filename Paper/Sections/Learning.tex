@@ -3,19 +3,19 @@
 The $Q$-Learning algorithm had to be immediately modified to be able to work in continuous state-action spaces for it to be suitable for Fido.
 Conventional $Q$-Learning is discrete.
 No relation is made between states or actions, and every action for each state must be performed individually in a noisy feedback system to determine its $Q$-value.
-However, Fido will work in a large, continuous state-action spaces where relations made between (state-action, $Q$-value) pairs can drastically reduce the number of learning iterations needed for convergence.
+However, Fido will work in a large, continuous state-action spaces where relations made between similar (state-action, $Q$-value) pairs can drastically reduce the number of learning iterations needed for convergence.
 An example of a task that would benefit from continuity is teaching Fido to adjust the speed of its motors based on the intensity of light that the robot detects.
 There is an obvious gradient relation between the (state-action, $Q$-value) pairs in this task and with a limited number of $Q$-values known, it is possible to correctly model $Q$.
 
-To accommodate continuous action-spaces, we coupled a wire-fitted moving least squares interpolator with our feed-forward neural network as described in \cite{gaskett}.
+To accommodate continuous action-spaces, we coupled a wire-fitted moving least squares interpolator with a feed-forward neural network as described in \cite{gaskett}.
 
 Feed-forward neural networks can generalize between states in $Q$-Learning problems with discrete actions as described in \cite{rummery}.
 To extend this implementation to a continuous action space, our feed-forward neural network outputs discrete ``wires'' when given a state.
-Each wire consists of an action with its respective $Q$-value for the state given to the neural network.
+Each wire consists of an action and its respective $Q$-value.
 These wires may be interpolated to model $Q$, allowing us to get the $Q$-value of any action performed in a state given as an input to the network.
 The interpolator used in Fido is a wire-fitted moving least squares interpolator used in the context of a memory-based learning system \cite{baird}.
 
-The wire-fitting function calculates $Q$-value of an action $\hat{a}$ for a state $s$ given a set of $n$ actions $a$ each with a respective $Q$-value $q$ as such:
+The wire-fitting function calculates $Q$-value of an action $\hat{a}$ for a state $s$ given a set of $n$ wires made up of actions $a$ and their respective $Q$-value $q$ as such:
 
 \begin{equation}
 	Q(a, s) = \cfrac{\sum_{i=0}^{n}\cfrac{q_i}{||\hat{a}-a_i||^2+c(q_{max}-q_i)+k}}{\sum_{i=0}^{n}\cfrac{1}{||\hat{a}-a_i||^2+c(q_{max}-q_i)+k}}
