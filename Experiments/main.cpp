@@ -440,7 +440,78 @@ void changingAction() {
   }
 }
 
+void drawSquare() {
+	std::vector< std::vector<int> > points = {{-6, 95, 50}, {6, 95, 50}, {6, 100, 30}, {-6, 100, 30}};
+	rl::FidoControlSystem learner(1, {0}, {1}, 4);
+
+	int currentIndex = 0;
+	while(true) {
+		int newIndex = (int)(5*learner.chooseBoltzmanActionDynamic({currentIndex*0.2})[0]);
+		learner.applyReinforcementToLastAction(1 - 0.5*fabs(newIndex-currentIndex), {currentIndex*0.2});
+
+    bool isGood = true;
+    for(int a = 0; a < 4; a++) {
+      std::cout << int(learner.chooseBoltzmanAction({a*0.25}, 0)[0]*4) << "\n";
+      std::cout << "Corr: " << (a+1 > 3 ? 0 : a+1) << "\n";
+       if(int(learner.chooseBoltzmanAction({a*0.25}, 0)[0]*4) != a+1 > 3 ? 0 : a+1) isGood = false;
+     }
+     if(isGood) break;
+    currentIndex = newIndex;
+	}
+}
+
+void judgingDriveToPoint() {
+  double maxDistanceComponent = 30;
+  std::vector<double> choosingTimes, updateTimes;
+  std::vector<int> iterations;
+
+  Simlink simulator;
+
+  rl::FidoControlSystem learner = rl::FidoControlSystem(2, {-1, -1}, {1, 1}, 6);
+
+  for(int a = 0; a < 200; a++) {
+    learner.reset();
+    simulator.placeRobotInRandomPosition();
+    simulator.placeEmitterInRandomPosition();
+
+    int iter = 0;
+
+    while(simulator.getDistanceOfRobotFromEmitter() > 60) {
+      double x, y;
+      simulator.getRobotDisplacementFromEmitter(&x, &y);
+
+      clock_t begin = clock();
+      rl::Action action = learner.chooseBoltzmanActionDynamic({x / (abs(x) + abs(y)), y / (abs(x) + abs(y))});
+      choosingTimes.push_back((clock() - begin) / (double)CLOCKS_PER_SEC);
+
+      double previousDistance = simulator.getDistanceOfRobotFromEmitter();
+
+      simulator.robot.setPosition(simulator.robot.getPosition() + sf::Vector2f(action[0] * maxDistanceComponent, action[1] * maxDistanceComponent));
+
+      simulator.getRobotDisplacementFromEmitter(&x, &y);
+
+      begin = clock();
+      learner.applyReinforcementToLastAction((double)(previousDistance - simulator.getDistanceOfRobotFromEmitter()) / sqrt(2*pow(maxDistanceComponent, 2)), {x / (abs(x) + abs(y)), y / (abs(x) + abs(y))});
+      updateTimes.push_back((clock() - begin) / (double)CLOCKS_PER_SEC);
+
+      if(simulator.getDistanceOfRobotFromEmitter() > 600) {
+        simulator.placeRobotInRandomPosition();
+      }
+
+	  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+      iter++;
+    }
+
+    iterations.push_back(iter);
+
+    printStats(iterations);
+    printStats(choosingTimes);
+    printStats(updateTimes);
+  }
+}
+
 int main() {
   srand(time(NULL));
-  driveToPointHolo();
+  judgingDriveToPoint();
 }
