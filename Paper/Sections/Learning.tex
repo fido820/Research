@@ -3,7 +3,7 @@
 The $Q$-Learning algorithm had to be immediately modified to be able to work in continuous state-action spaces for it to be suitable for Fido.
 Conventional $Q$-Learning is discrete.
 No relation is made between states or actions, and every action for each state must be performed individually in a noisy feedback system to determine its $Q$-value.
-However, Fido will work in a large, continuous state-action spaces where relations made between (state-action, $Q$-value) pairs can drastically reduce the number of reward iterations needed for convergence.
+However, Fido will work in a large, continuous state-action spaces where relations made between (state-action, $Q$-value) pairs can drastically reduce the number of learning iterations needed for convergence.
 An example of a task that would benefit from continuity is teaching Fido to adjust the speed of its motors based on the intensity of light that the robot detects.
 There is an obvious gradient relation between the (state-action, $Q$-value) pairs in this task and with a limited number of $Q$-values known, it is possible to correctly model $Q$.
 
@@ -83,7 +83,7 @@ There are a number of approaches to choosing this action, and each has a large a
 The most common approach is to simply pick the action with the best $Q$-value for the current state.
 However this strategy stifles exploration of the state-action space, increasing the time of convergence on a task, hurting the retrain-ability of the model, and giving a bias towards an actor's starting policy, which is random.
 This problem is compounded in the case of Fido due to the large state and action spaces that Fido must explore.
-Another common method of action selection is to choose each action randomly for a set number of reward iterations, and then to switch to choosing the action with the highest $Q$-value.
+Another common method of action selection is to choose each action randomly for a set number of learning iterations, and then to switch to choosing the action with the highest $Q$-value.
 This plan improves upon the first by allowing for a period of exploration, but is not suited for Fido.
 During its lifetime, Fido must have the ability to learn new tasks and be retrained by the operator providing feedback, and so, must continuously explore its state space.
 
@@ -101,7 +101,7 @@ As $T$ approaches infinity, a random action is chosen.
 As $T$ tends toward 0, the best action is chosen.
 Fido keeps $T$ at a constant value around $T \approx 0.15$ throughout its lifetime to encourage occasional, continued exploration.
 
-$T$ is set proportional to Fido's uncertainty value, so that Fido rapidly explores when it is first initialized or is being retrained. This allows Fido to converge on tasks in fewer reward iterations than if $T$ were set as a constant. As Fido learns a task, $T$ will approach 0. This means that Fido will accurately perform a task when sure of its actions, increasing Fido's average reward over other systems.
+$T$ is set proportional to Fido's uncertainty value, so that Fido rapidly explores when it is first initialized or is being retrained. This allows Fido to converge on tasks in fewer learning iterations than if $T$ were set as a constant. As Fido learns a task, $T$ will approach 0. This means that Fido will accurately perform a task when sure of its actions, increasing Fido's average reward over other systems.
 
 \subsection{Experience Replay}
 

@@ -1,12 +1,12 @@
 \subsection{Data Collection from Simulation}
 
 To test Fido's effectiveness at learning with limited feedback, Fido was first trained on a number of different tasks through our simulator using reward values delegated through software.
-Data was collected regarding Fido's latency and number of reward iterations needed for convergence.
+Data was collected regarding Fido's latency and number of learning iterations needed for convergence.
 
 \subsubsection{Simulation Experiments}
 
 Fido's first and simplest task, dubbed ``Flash,'' was to set the brightness value of an LED to a value proportional to the amount of light that Fido sensed.
-Each reward iteration, Fido's neural network was given the intensity of visible light that Fido detected and was asked for the brightness value of Fido's LED.
+Each learning iteration, Fido's neural network was given the intensity of visible light that Fido detected and was asked for the brightness value of Fido's LED.
 Fido was then given a reward value equal to $1 - |b - v|$ where $b$ was the brightness value of Fido's LED ranging from 0 to 1 and $v$ was the intensity of visible light that Fido detected ranging from 0 to 1.
 
 ``Float,'' Fido's second task, challenged our learning implementation to direct a robot to point.
@@ -32,7 +32,7 @@ Fido completed each trial when it had stayed within 60 pixels of the line for 10
 \subsubsection{Simulation Findings}
 
 Each task was run 400 times to gather the data show in Table \ref{tab:data}.
-The reward iterations values shown in the above data table were the medians of the data collected.
+The learning iterations values shown in the above data table were the medians of the data collected.
 The median is shown instead of the mean to discount a few large outliers that were present in data.
 The time data shown above is the mean of the data collected.
 
@@ -53,8 +53,8 @@ The time data shown above is the mean of the data collected.
 
 The data collected through the simulator demonstrates the prowess of the Fido control system with computer-delegated reward in multiple configurations and situations.
  Fido was able to master both a holonomic and differential-drive motor control system (the ``Float'' and ``Drive'' tasks), proving its hardware agnostic capabilities.
-All tasks showed low numbers of reward iterations and low latency, allowing Fido to learn quickly and efficiently.
-The task that was most difficult for Fido, ``Drive,'' took a median of 16 reward iterations, well within the patience of a human.
+All tasks showed low numbers of learning iterations and low latency, allowing Fido to learn quickly and efficiently.
+The task that was most difficult for Fido, ``Drive,'' took a median of 16 learning iterations, well within the patience of a human.
 
 \subsection{Data Collection in Person}
 
@@ -73,7 +73,7 @@ Fido was then given a reward value equal to $1 - 2|m|$ where $m$ was the speed o
 Fido's hardware implementation tested on one more task, ``Drive to Point.'' As on the simulator, Fido was tasked with moving to a point by controlling a differential drive system.
  At the start of each trial, Fido and the point were placed randomly on a smooth, hardwood surface within 0.75 meters of one another.
 Fido was told the ratio of its $x$ displacement to its $y$ displacement from its target point as well as its rotation.
-Every fourth action that Fido made was chosen as a reward iteration, and Fido was given a reward value corresponding to its last action.
+Every fourth action that Fido made was chosen as a learning iteration, and Fido was given a reward value corresponding to its last action.
 This reward value was chosen by the tester based on whether Fido moved toward the point or not.
 Fido completed each trial when it was within 10 cm of the point.
 Fido's feed-forward neural network had 4 hidden layers each with 10 neurons and outputted 5 wires to the wire-fitted interpolator.
@@ -82,7 +82,7 @@ The exploration constant in equation \ref{equ::boltzmann} was held at 0.2.
 \subsubsection{Physical Findings}
 
 25 trials were done for each task to gather the data shown in Table \ref{tab:data2}.
-As with the simulation, reward iterations values shown are the medians of the data collected while time data shown is the mean of the data collected.
+As with the simulation, learning iterations values shown are the medians of the data collected while time data shown is the mean of the data collected.
 
 \begin{table}[ht]
 	\centering

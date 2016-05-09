@@ -128,10 +128,10 @@
 	\vspace{-1.5cm}
 
 	\begin{itemize}
-		\item After every reward iteration, Fido adjusts its model to correct the disparity between its expected reward and the reward it just recieved using \textbf{Stochastic Gradient Descent} to modify the action-reward pairs that are outputted by its neural network.
+		\item After every learning iteration, Fido adjusts its model to correct the disparity between its expected reward and the reward it just recieved using \textbf{Stochastic Gradient Descent} to modify the action-reward pairs that are outputted by its neural network.
 		\item Fido trains its neural network using the Adadelta training method, eliminating the need to specify a hard-coded learning rate.
 		\item Fido uses \textbf{experience replay}, the practice of training a system on past states, actions, and rewards to decrease training time. Every learning iteration, Fido is trained on past experiences.  Newer experiences are more likely to be sampled for retraining. If uncertainty value of the model begins to rise, Fido samples fewer experiences, because past rewards will be incorrect if Fido is being trained on a new task.
-		\item After each reward iteration, Fido efficiently grows and prunes its neural network to the optimal size and architecture for the task at hand, using neuron sensitivity approximations.
+		\item After each learning iteration, Fido efficiently grows and prunes its neural network to the optimal size and architecture for the task at hand, using neuron sensitivity approximations.
 	\end{itemize}
 
 \end{block}

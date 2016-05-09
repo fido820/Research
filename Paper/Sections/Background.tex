@@ -120,7 +120,7 @@ As actions are performed over time, the reinforcement learning algorithm sharpen
 $Q$-Learning \cite{watkins} is a popular reinforcement learning algorithm that works by learning an action-value function $Q$ that takes a state-action pair as an input and outputs the expected utility value of performing that action in that state.
 This utility value is know as the $Q$-value.
 The $Q$-value is a combination of immediate reward and expected future reward.
-Every reward iteration the $Q$-value of an state-action pair is updated as such:
+Every learning iteration the $Q$-value of an state-action pair is updated as such:
 
 \begin{equation}
 	Q(s, a) := Q(s, a)(1 - \alpha) + \alpha(R + \gamma \max Q(s_{t+1}, a))
@@ -131,7 +131,7 @@ Every reward iteration the $Q$-value of an state-action pair is updated as such:
 \noindent
 where $a$ is the action carried out, $s$ is the initial state, $R$ is the reward received, and $s_{t+1}$ is the new state.
 $\alpha$ is the learning rate of the algorithm.
-The learning rate determines the rate of convergence by diminishing or amplifying the changes made to the $Q$-value each reward iteration.
+The learning rate determines the rate of convergence by diminishing or amplifying the changes made to the $Q$-value each learning iteration.
 $\gamma$ is the devaluation factor, which determines the weight given to future rewards.
 A devaluation factor approaching $\gamma=0$ will force the algorithm to only value immediate reward, while a devaluation factor approaching $\gamma=1$ will make it focused on high long term reward.
 A table is used to model the $Q$ function, storing past state-action pairs and each pair's respective $Q$-value.
