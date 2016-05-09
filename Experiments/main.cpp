@@ -233,7 +233,7 @@ void driveToPointDifferential(rl::FidoControlSystem *learner) {
 
       for(int a = 0; a < 4; a++) {
         simulator.getRobotDisplacementFromEmitter(&x, &y);
-        rl::Action action = learner->chooseBoltzmanAction({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0}, 1000);
+        rl::Action action = learner->chooseBoltzmanAction({x / (fabs(x) + fabs(y)), y / (fabs(x) + fabs(y)), (double)simulator.robot.getRotation() / 360.0}, 0);
         simulator.robot.go(action[0] * 100, action[1] * 100, 3, 20);
 
         while(simulator.getDistanceOfRobotFromEmitter() > 400) {
@@ -242,7 +242,7 @@ void driveToPointDifferential(rl::FidoControlSystem *learner) {
       }
 
       simulator.getRobotDisplacementFromEmitter(&x, &y);
-      rl::Action action = learner->chooseBoltzmanAction({x / (abs(x) + abs(y)), y / (abs(x) + abs(y)), (double)simulator.robot.getRotation() / 360.0}, 1000);
+      rl::Action action = learner->chooseBoltzmanActionDynamic({x / (fabs(x) + fabs(y)), y / (fabs(x) + fabs(y)), (double)simulator.robot.getRotation() / 360.0});
 
       double previousDistance = simulator.getDistanceOfRobotFromEmitter();
 
@@ -440,27 +440,7 @@ void changingAction() {
   }
 }
 
-void drawSquare() {
-	std::vector< std::vector<int> > points = {{-6, 95, 50}, {6, 95, 50}, {6, 100, 30}, {-6, 100, 30}};
-	rl::FidoControlSystem learner(1, {0}, {1}, 4);
-
-	int currentIndex = 0;
-	while(true) {
-		int newIndex = (int)(5*learner.chooseBoltzmanActionDynamic({currentIndex*0.2})[0]);
-		learner.applyReinforcementToLastAction(1 - 0.5*fabs(newIndex-currentIndex), {currentIndex*0.2});
-
-    bool isGood = true;
-    for(int a = 0; a < 4; a++) {
-      std::cout << int(learner.chooseBoltzmanAction({a*0.25}, 0)[0]*4) << "\n";
-      std::cout << "Corr: " << (a+1 > 3 ? 0 : a+1) << "\n";
-       if(int(learner.chooseBoltzmanAction({a*0.25}, 0)[0]*4) != a+1 > 3 ? 0 : a+1) isGood = false;
-     }
-     if(isGood) break;
-    currentIndex = newIndex;
-	}
-}
-
 int main() {
   srand(time(NULL));
-  drawSquare();
+  driveToPointHolo();
 }
