@@ -2,12 +2,11 @@
 
 \begin{abstract}
 
-A robot control system was developed that could be taught tasks through reinforcement learning.
+A robot control system was developed that non-experts could teach through reinforcement learning four times faster than the industry standard reinforcement learning control system.
 The system, nicknamed “Fido”, was designed to be universal regardless of inputs and outputs, robot kinematics, and processing capability.
-In addition, Fido was built to learn with limited feedback, allowing humans to train Fido in a minimal amount of time.
-This was achieved through the training of artificial neural networks with a wire-fitted interpolator following the Q-learning reinforcement learning algorithm and an intelligent action selection policy that utilizes a probabilistic approach to exploration.
+Fido utilizes the Q-learning reinforcement learning algorithm coupled with an artificial neural network and a wire-fitted interpolator, follows an intelligent action selection policy, efficiently adjusts its model architecture, and trains itself on samples of past experiences.
 Functionality was first tested and evaluated in simulation.
-Next, hardware implementations of differing kinematics, sensors, and central processors were constructed.
+Next, three robots of differing kinematics, sensors, and central processors were constructed.
 Fido successfully converged on all given tasks in simulation and in hardware within very few learning iterations while maintaining impressively low latency, demonstrating its potential as a comprehensive robot control system.
 
 \end{abstract}
