@@ -1,7 +1,6 @@
-A general robotic control system nicknamed Fido was developed that learned tasks with limited feedback.
-Fido couples the training of artificial neural networks with a wire-fitted moving least squares interpolator to achieve a continuous state-action space $Q$-learning reinforcement algorithm implementation.
-Fido leverages a Boltzmann distribution of probability based on reward to select actions, allowing it to continuously explore its state-action space.
-A kinematically accurate robot was simulated with a differential drive system, a sensor array, and other outputs for testing and evaluation purposes.
-The robot was trained on a number of common robotic tasks and successfully converged on these tasks in very few learning iterations while maintaining impressively low latency.
-Next a hardware implementation was built using a differential drive system, capable of utilizing real world sensor inputs to learn tasks such as driving to a point and staying still.
-In the future, we hope to further improve Fido's software and consider further applications in the present.
+Fido successfully our objectives of trainablility, universality, and performance.
+Fido was trainable and re-trainable on a wide range of unique tasks by non-expert humans.
+The system was fully universal, achieving similar performance on a simulator and three different robots with no code changes to the control system.
+Fido also learned with four times fewer learning iterations than the industry standard trainable control system, discrete Q-learning with neural networks.
+The control system was also able to effectively cope with noisy sensor values and human-given reward, while maintaining such little latency as to allow it to be run on a \$5 dollar computer.
+The increase in performance and universality presented by Fido makes it a viable alternative over traditional procedurally programmed systems.
