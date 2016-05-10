@@ -107,7 +107,7 @@ $T$ is set proportional to Fido's uncertainty value, so that Fido rapidly explor
 
 As a reinforcement learning system proceeded throughout a problem, the effect of former learning iterations decreases with time as the system updates the parameters of its model to lower its error on new learning iterations. This is wasteful since some iterations will present the system with critical information, such as tagging an unlikely action with high reward.
 
-Fido stores each learning iteration's initial and final states, action, and reward, collectively known as an "experience." Every learning iteration, Fido trains its model on a few past experiences, which are sampled probabilistically according to their age. Weight is given to newer experiences. The number of experiences sampled is proportional to the inverse of Fido's uncertainty value, as past histories will become invalid if the parameters of a problem change. This practice, called "experience replay," lowers the number of learning iterations required for convergence by utilizing all of the information available to Fido.
+Fido stores each learning iteration's initial and final states, action, and reward, collectively known as an `experience.'' Past control systems have periodically fed these experiences through a reinforcement learning model to lower convergence time on in non-chaning environments \cite{adam}. We extend this method to changing environments. Every learning iteration, Fido trains its model on a few past experiences, which are sampled probabilistically according to their age. Weight is given to newer experiences. The number of experiences sampled is proportional to the inverse of Fido's uncertainty value, as past histories will become invalid if the parameters of a problem change.
 
 \subsection{Dynamic Model Architecture}
 
@@ -117,7 +117,7 @@ The most accurate method of model architecture optimization would be a brute for
 
 However, such a method is extraordinarily latent and since Fido needs to be able to run on low power systems, is infeasible. Stochastic gradient descent would be a natural choice for such a search, but the relationship between Fido's error and its model architecture is not easily derivable.
 
-Instead, Fido performs a simultaneous perturbation stochastic approximation to adjust its model architecture. SPSA is gradient descent method designed for discrete systems that requires only two samples of the cost function to compute its derivative. Its update function is similar to \ref{equ::wirefiterrorfunction} and is given as:
+Instead, Fido performs a simultaneous perturbation stochastic approximation \cite{spall} to adjust its model architecture. SPSA is gradient descent method designed for discrete systems that requires only two samples of the cost function to compute its derivative. Its update function is similar to \ref{equ::wirefiterrorfunction} and is given as:
 
 \begin{equation}
 	u_{n+1} = u_n - a_n\hat{g_n}(u_n)
@@ -138,7 +138,7 @@ where $n$ is the current epoch; $u$ is our model parameters, the number of wires
 
 where $\Delta_n$ is a random perturbation vector and $J$ is the cost function. For Fido, $J$ is the error of the the model $m_n$ that is defined by $u_n$ on a sample of experiences after a period of training.
 
-To optimize the sampling of $J$, Fido creates $m_n$'s neural network by adding and subtracting the Fido's current network since Fido's model at any given time will have a relatively low $J$. Fido subtracts "unimportant" neurons using a pruning algorithm so as to decrease $J(m_n)$. Our pruning algorithm estimates the effect of pruning weight $w_{ij}$ on $J$. This estimate using values recorded during backpropagation or Adadelta and is given as:
+To optimize the sampling of $J$, Fido creates $m_n$'s neural network by adding and subtracting the Fido's current network since Fido's model at any given time will have a relatively low $J$. Fido subtracts "unimportant" neurons using a pruning algorithm \cite{reed} so as to decrease $J(m_n)$. Our pruning algorithm estimates the effect of pruning weight $w_{ij}$ on $J$. This estimate using values recorded during backpropagation or Adadelta \cit{zeiler} and is given as:
 
 \begin{equation}
 	\sum_{b=0}^{B}\cfrac{\delta E}{\delta w_{ij}}\Delta w_{ij}(b)\cfrac{w^f_{ij}}{w^f_{ij}-w^i_{ij}}
