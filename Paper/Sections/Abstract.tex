@@ -2,11 +2,10 @@
 
 \begin{abstract}
 
-A robot control system was developed that non-experts could teach through reinforcement learning four times faster than the industry standard reinforcement learning control system.
-The system, nicknamed “Fido”, was designed to be universal regardless of inputs and outputs, robot kinematics, and processing capability.
-Fido utilizes the Q-learning reinforcement learning algorithm coupled with an artificial neural network and a wire-fitted interpolator, follows an intelligent action selection policy, efficiently adjusts its model architecture, and trains itself on samples of past experiences.
-Functionality was first tested and evaluated in simulation.
-Next, three robots of differing kinematics, sensors, and central processors were constructed.
-Fido successfully converged on all given tasks in simulation and in hardware within very few learning iterations while maintaining impressively low latency, demonstrating its potential as a comprehensive robot control system.
+A universal robot control system was created that could be trained rather than programmed in a matter of minutes.
+The system, nicknamed “Fido”, was designed to be trained by non-experts, to run on any robot regardless of inputs and outputs, robot kinematics, and processing capability, and to learn with limited human administered feedback.
+To achieve this, Fido utilizes the Q-learning reinforcement learning algorithm coupled with an artificial neural network and a wire-fitted interpolator, follows an intelligent action selection policy, efficiently adjusts its model architecture, and trains itself on samples of past experiences.
+Functionality was tested on a robotic simulator and three robots of differing kinematics, sensors, and central processors.
+Fido successfully converged on all given tasks in simulation and in hardware with an average of \textbf{four times less feedback} than the industry standard trainable control system, while maintaining impressively low latency even on a \$5 computer.
 
 \end{abstract}
