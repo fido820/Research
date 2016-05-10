@@ -138,7 +138,7 @@ where $n$ is the current epoch; $u$ is our model parameters, the number of wires
 
 where $\Delta_n$ is a random perturbation vector and $J$ is the cost function. For Fido, $J$ is the error of the the model $m_n$ that is defined by $u_n$ on a sample of experiences after a period of training.
 
-To optimize the sampling of $J$, Fido creates $m_n$'s neural network by adding and subtracting the Fido's current network since Fido's model at any given time will have a relatively low $J$. Fido subtracts "unimportant" neurons using a pruning algorithm \cite{reed} so as to decrease $J(m_n)$. Our pruning algorithm estimates the effect of pruning weight $w_{ij}$ on $J$. This estimate using values recorded during backpropagation or Adadelta \cit{zeiler} and is given as:
+To optimize the sampling of $J$, Fido creates $m_n$'s neural network by adding and subtracting the Fido's current network since Fido's model at any given time will have a relatively low $J$. Fido subtracts "unimportant" neurons using a pruning algorithm \cite{reed} so as to decrease $J(m_n)$. Our pruning algorithm estimates the effect of pruning weight $w_{ij}$ on $J$. This estimate using values recorded during backpropagation or Adadelta \cite{zeiler} and is given as:
 
 \begin{equation}
 	\sum_{b=0}^{B}\cfrac{\delta E}{\delta w_{ij}}\Delta w_{ij}(b)\cfrac{w^f_{ij}}{w^f_{ij}-w^i_{ij}}
