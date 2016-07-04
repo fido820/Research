@@ -1,5 +1,7 @@
 # Fido: A Universal Robot Control System using Reinforcement Learning with Limited Feedback
 
+This document is a summary. For a more detailed look at our research, [here is a link to our paper](https://github.com/FidoProject/Research/raw/master/Paper/Paper.pdf).
+
 A robot control system that learns from humans **four times faster** than the current industry standard. Researched and built by [Josh Gruenstein](https://github.com/joshuagruenstein "@joshuagruenstein") and [Michael Truell](https://github.com/truell20 "@truell20").
 
 ## Abstract
